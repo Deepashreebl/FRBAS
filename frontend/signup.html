@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BEL Workforce - Sign Up</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #172033;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 620px;
+            background: white;
+            border-radius: 20px;
+            padding: 35px 45px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #12479b;
+            font-size: 30px;
+        }
+
+        .header p {
+            margin-top: 8px;
+            color: #667085;
+            font-size: 15px;
+        }
+
+        .section-title {
+            color: #12479b;
+            font-size: 18px;
+            margin: 25px 0 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #172033;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #12479b;
+            box-shadow: 0 0 0 2px rgba(18, 71, 155, 0.10);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            padding-right: 55px;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #12479b;
+            font-weight: bold;
+        }
+
+        .password-rules {
+            background: #f8fafc;
+            border: 1px solid #dbe2ea;
+            border-radius: 10px;
+            padding: 13px 16px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .rule {
+            margin: 5px 0;
+        }
+
+        .valid {
+            color: green;
+        }
+
+        .invalid {
+            color: #d11a2a;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .success {
+            display: block;
+            background: #ecfdf3;
+            color: #087443;
+            border: 1px solid #a7f3d0;
+        }
+
+        .error {
+            display: block;
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+        }
+
+        .create-btn {
+            width: 100%;
+            padding: 15px;
+            background: #12479b;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 19px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .create-btn:hover {
+            background: #0d3b82;
+        }
+
+        .create-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 17px;
+        }
+
+        .login-link a {
+            color: #5b21b6;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>BEL Workforce</h1>
+            <p>Smart Employee Attendance & Payroll Management System</p>
+        </div>
+
+
+        <!-- FORM -->
+        <form id="signupForm">
+
+            <div class="section-title">
+                Employee Information
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input
+                    type="text"
+                    id="fullName"
+                    placeholder="Enter your full name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="employeeId">Employee ID</label>
+                <input
+                    type="text"
+                    id="employeeId"
+                    placeholder="Example: EMP001"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input
+                    type="text"
+                    id="department"
+                    placeholder="Example: Information Technology"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="designation">Designation</label>
+                <input
+                    type="text"
+                    id="designation"
+                    placeholder="Example: Software Engineer"
+                    required
+                >
+            </div>
+
+
+            <div class="section-title">
+                Account Information
+            </div>
+
+            <div class="form-group">
+                <label for="accountType">Account Type</label>
+
+                <select id="accountType">
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin / HR</option>
+                </select>
+            </div>
+
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-container">
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Create a password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        onclick="togglePassword('password', this)"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+                <div class="password-rules">
+
+                    <div id="ruleLength" class="rule invalid">
+                        ✗ Minimum 8 characters
+                    </div>
+
+                    <div id="ruleUpper" class="rule invalid">
+                        ✗ At least 1 uppercase letter
+                    </div>
+
+                    <div id="ruleLower" class="rule invalid">
+                        ✗ At least 1 lowercase letter
+                    </div>
+
+                    <div id="ruleNumber" class="rule invalid">
+                        ✗ At least 1 number
+                    </div>
+
+                    <div id="ruleSpecial" class="rule invalid">
+                        ✗ At least 1 special character
+                    </div>
+
+                    <div class="rule valid">
+                        ✓ Password is case-sensitive
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <div class="password-container">
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm your password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        onclick="togglePassword('confirmPassword', this)"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+                <div id="confirmMessage" class="rule"></div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+            <div id="message" class="message"></div>
+
+
+            <!-- CREATE ACCOUNT -->
+            <button
+                type="submit"
+                id="createAccountButton"
+                class="create-btn"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <!-- SIGN IN -->
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="index.html">
+                Sign In
+            </a>
+
+        </div>
+
+
+        <div class="footer">
+            Secure access for authorized BEL Workforce users
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =====================================================
+    // PASSWORD SHOW / HIDE
+    // =====================================================
+
+    function togglePassword(fieldId, button) {
+
+        const field = document.getElementById(fieldId);
+
+        if (field.type === "password") {
+
+            field.type = "text";
+            button.textContent = "Hide";
+
+        } else {
+
+            field.type = "password";
+            button.textContent = "Show";
+
+        }
+    }
+
+
+    // =====================================================
+    // PASSWORD VALIDATION
+    // =====================================================
+
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+
+    const ruleLength = document.getElementById("ruleLength");
+    const ruleUpper = document.getElementById("ruleUpper");
+    const ruleLower = document.getElementById("ruleLower");
+    const ruleNumber = document.getElementById("ruleNumber");
+    const ruleSpecial = document.getElementById("ruleSpecial");
+
+    const confirmMessage = document.getElementById("confirmMessage");
+
+
+    password.addEventListener("input", validatePassword);
+
+
+    function setRule(element, condition, text) {
+
+        if (condition) {
+
+            element.className = "rule valid";
+            element.textContent = "✓ " + text;
+
+        } else {
+
+            element.className = "rule invalid";
+            element.textContent = "✗ " + text;
+
+        }
+    }
+
+
+    function validatePassword() {
+
+        const value = password.value;
+
+        setRule(
+            ruleLength,
+            value.length >= 8,
+            "Minimum 8 characters"
+        );
+
+        setRule(
+            ruleUpper,
+            /[A-Z]/.test(value),
+            "At least 1 uppercase letter"
+        );
+
+        setRule(
+            ruleLower,
+            /[a-z]/.test(value),
+            "At least 1 lowercase letter"
+        );
+
+        setRule(
+            ruleNumber,
+            /[0-9]/.test(value),
+            "At least 1 number"
+        );
+
+        setRule(
+            ruleSpecial,
+            /[^A-Za-z0-9]/.test(value),
+            "At least 1 special character"
+        );
+
+        checkPasswordMatch();
+    }
+
+
+    confirmPassword.addEventListener(
+        "input",
+        checkPasswordMatch
+    );
+
+
+    function checkPasswordMatch() {
+
+        if (!confirmPassword.value) {
+
+            confirmMessage.textContent = "";
+            confirmMessage.className = "rule";
+
+            return;
+        }
+
+        if (password.value === confirmPassword.value) {
+
+            confirmMessage.textContent = "✓ Passwords match";
+            confirmMessage.className = "rule valid";
+
+        } else {
+
+            confirmMessage.textContent = "✗ Passwords do not match";
+            confirmMessage.className = "rule invalid";
+
+        }
+    }
+
+
+    // =====================================================
+    // CHECK ALL PASSWORD RULES
+    // =====================================================
+
+    function passwordIsValid() {
+
+        const value = password.value;
+
+        return (
+            value.length >= 8 &&
+            /[A-Z]/.test(value) &&
+            /[a-z]/.test(value) &&
+            /[0-9]/.test(value) &&
+            /[^A-Za-z0-9]/.test(value)
+        );
+    }
+
+
+    // =====================================================
+    // MESSAGE
+    // =====================================================
+
+    function showMessage(message, type) {
+
+        const messageBox = document.getElementById("message");
+
+        messageBox.textContent = message;
+
+        messageBox.className = "message " + type;
+
+        messageBox.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+
+    // =====================================================
+    // SIGNUP
+    // =====================================================
+
+    document
+        .getElementById("signupForm")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            // ---------------------------------------------
+            // GET VALUES
+            // ---------------------------------------------
+
+            const fullName =
+                document.getElementById("fullName").value.trim();
+
+            const employeeId =
+                document.getElementById("employeeId").value.trim();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const phone =
+                document.getElementById("phone").value.trim();
+
+            const department =
+                document.getElementById("department").value.trim();
+
+            const designation =
+                document.getElementById("designation").value.trim();
+
+            const accountType =
+                document.getElementById("accountType").value;
+
+            const passwordValue =
+                password.value;
+
+            const confirmPasswordValue =
+                confirmPassword.value;
+
+
+            // ---------------------------------------------
+            // VALIDATION
+            // ---------------------------------------------
+
+            if (!passwordIsValid()) {
+
+                showMessage(
+                    "Please satisfy all password requirements.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (passwordValue !== confirmPasswordValue) {
+
+                showMessage(
+                    "Passwords do not match.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            // ---------------------------------------------
+            // BUTTON
+            // ---------------------------------------------
+
+            const button =
+                document.getElementById("createAccountButton");
+
+            button.disabled = true;
+            button.textContent = "Creating Account...";
+
+
+            // ---------------------------------------------
+            // API REQUEST
+            // ---------------------------------------------
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:8001/api/auth/signup",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            full_name: fullName,
+
+                            employee_id: employeeId,
+
+                            email: email,
+
+                            phone: phone,
+
+                            department: department,
+
+                            designation: designation,
+
+                            account_type: accountType,
+
+                            password: passwordValue,
+
+                            confirm_password: confirmPasswordValue
+
+                        })
+                    }
+                );
+
+
+                const result = await response.json();
+
+
+                // -----------------------------------------
+                // API ERROR
+                // -----------------------------------------
+
+                if (!response.ok) {
+
+                    let errorMessage =
+                        "Unable to create account.";
+
+                    if (result.detail) {
+                        errorMessage = result.detail;
+                    }
+
+                    showMessage(
+                        errorMessage,
+                        "error"
+                    );
+
+                    button.disabled = false;
+                    button.textContent = "Create Account";
+
+                    return;
+                }
+
+
+                // -----------------------------------------
+                // SUCCESS
+                // -----------------------------------------
+
+                showMessage(
+                    "Account created successfully! Redirecting to Login...",
+                    "success"
+                );
+
+
+                // Clear password fields
+
+                password.value = "";
+                confirmPassword.value = "";
+
+
+                // Redirect to login
+
+                setTimeout(function() {
+
+                    window.location.href = "index.html";
+
+                }, 1800);
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    "Cannot connect to the authentication server. Make sure the API is running on port 8001.",
+                    "error"
+                );
+
+                button.disabled = false;
+                button.textContent = "Create Account";
+            }
+
+        });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BEL Workforce - Admin Dashboard
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+
+            background: #f4f6f9;
+
+            color: #222;
+
+        }
+
+
+        /* ================================
+           HEADER
+        ================================= */
+
+        .header {
+
+            background: #17365d;
+
+            color: white;
+
+            padding: 18px 30px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+        .header h1 {
+
+            font-size: 24px;
+
+        }
+
+
+        .header p {
+
+            font-size: 13px;
+
+            margin-top: 4px;
+
+            opacity: 0.85;
+
+        }
+
+
+        .logout {
+
+            background: #dc3545;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ================================
+           CONTAINER
+        ================================= */
+
+        .container {
+
+            max-width: 1400px;
+
+            margin: 30px auto;
+
+            padding: 0 20px;
+
+        }
+
+
+        .page-title {
+
+            color: #17365d;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        /* ================================
+           SUMMARY CARDS
+        ================================= */
+
+        .cards {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(190px, 1fr)
+                );
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .card {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.08);
+
+        }
+
+
+        .card h3 {
+
+            color: #666;
+
+            font-size: 14px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .card .number {
+
+            color: #17365d;
+
+            font-size: 30px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ================================
+           SECTION
+        ================================= */
+
+        .section {
+
+            background: white;
+
+            border-radius: 10px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.08);
+
+        }
+
+
+        .section h2 {
+
+            color: #17365d;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        /* ================================
+           FILTERS
+        ================================= */
+
+        .filters {
+
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .filters input {
+
+            padding: 10px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+        }
+
+
+        .filters button {
+
+            background: #17365d;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+        }
+
+
+        /* ================================
+           TABLE
+        ================================= */
+
+        .table-container {
+
+            overflow-x: auto;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+
+        th,
+        td {
+
+            padding: 12px;
+
+            border-bottom: 1px solid #ddd;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+        }
+
+
+        th {
+
+            background: #17365d;
+
+            color: white;
+
+        }
+
+
+        tr:hover {
+
+            background: #f8f9fa;
+
+        }
+
+
+        /* ================================
+           STATUS
+        ================================= */
+
+        .status {
+
+            padding: 5px 9px;
+
+            border-radius: 5px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+        }
+
+
+        .present {
+
+            background: #d1e7dd;
+
+            color: #0f5132;
+
+        }
+
+
+        .checked {
+
+            background: #cff4fc;
+
+            color: #055160;
+
+        }
+
+
+        .absent {
+
+            background: #f8d7da;
+
+            color: #842029;
+
+        }
+
+
+        /* ================================
+           MESSAGE
+        ================================= */
+
+        #message {
+
+            display: none;
+
+            background: #cff4fc;
+
+            color: #055160;
+
+            padding: 12px;
+
+            border-radius: 6px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media(max-width: 600px) {
+
+            .header {
+
+                padding: 15px;
+
+            }
+
+
+            .header h1 {
+
+                font-size: 19px;
+
+            }
+
+
+            .container {
+
+                padding: 0 12px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<div class="header">
+
+    <div>
+
+        <h1>
+            BEL Workforce
+        </h1>
+
+        <p>
+            Admin Dashboard
+        </p>
+
+    </div>
+
+
+    <button
+        class="logout"
+        onclick="logout()"
+    >
+        Logout
+    </button>
+
+</div>
+
+
+
+<div class="container">
+
+
+    <h1 class="page-title">
+        Attendance Management
+    </h1>
+
+
+    <div id="message">
+    </div>
+
+
+    <!-- =========================================
+         SUMMARY
+    ========================================= -->
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <h3>
+                Total Employees
+            </h3>
+
+            <div
+                class="number"
+                id="totalEmployees"
+            >
+                --
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Present Today
+            </h3>
+
+            <div
+                class="number"
+                id="presentToday"
+            >
+                --
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Checked Out
+            </h3>
+
+            <div
+                class="number"
+                id="checkedOutToday"
+            >
+                --
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                On Leave
+            </h3>
+
+            <div
+                class="number"
+                id="leaveToday"
+            >
+                --
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Absent
+            </h3>
+
+            <div
+                class="number"
+                id="absentToday"
+            >
+                --
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================================
+         ATTENDANCE
+    ========================================= -->
+
+    <div class="section">
+
+
+        <h2>
+            Today's Attendance
+        </h2>
+
+
+        <div class="filters">
+
+            <input
+                type="date"
+                id="attendanceDate"
+            >
+
+            <button
+                onclick="loadAttendanceByDate()"
+            >
+                View Attendance
+            </button>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Employee ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Check-In
+                        </th>
+
+                        <th>
+                            Check-Out
+                        </th>
+
+                        <th>
+                            Working Hours
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="attendanceTable"
+                >
+
+                    <tr>
+
+                        <td colspan="7">
+                            Loading...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         EMPLOYEES
+    ========================================= -->
+
+    <div class="section">
+
+
+        <h2>
+            Employees
+        </h2>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Employee ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Designation
+                        </th>
+
+                        <th>
+                            Salary
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="employeeTable"
+                >
+
+                    <tr>
+
+                        <td colspan="7">
+                            Loading...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    // ============================================
+    // API
+    // ============================================
+
+    const ADMIN_API =
+        "http://127.0.0.1:8004";
+
+
+    // ============================================
+    // DATE
+    // ============================================
+
+    function getToday() {
+
+        const now =
+            new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    document.getElementById(
+        "attendanceDate"
+    ).value =
+        getToday();
+
+
+    // ============================================
+    // MESSAGE
+    // ============================================
+
+    function showMessage(
+        text
+    ) {
+
+        const box =
+            document.getElementById(
+                "message"
+            );
+
+        box.textContent =
+            text;
+
+        box.style.display =
+            "block";
+
+    }
+
+
+    // ============================================
+    // LOAD SUMMARY
+    // ============================================
+
+    async function loadSummary() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${ADMIN_API}/api/admin/summary`
+                );
+
+
+            const data =
+                await response.json();
+
+
+            document.getElementById(
+                "totalEmployees"
+            ).textContent =
+                data.total_employees ?? 0;
+
+
+            document.getElementById(
+                "presentToday"
+            ).textContent =
+                data.present_today ?? 0;
+
+
+            document.getElementById(
+                "checkedOutToday"
+            ).textContent =
+                data.checked_out_today ?? 0;
+
+
+            document.getElementById(
+                "leaveToday"
+            ).textContent =
+                data.on_leave_today ?? 0;
+
+
+            document.getElementById(
+                "absentToday"
+            ).textContent =
+                data.absent_today ?? 0;
+
+
+        } catch(error) {
+
+            console.error(
+                "Summary error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // ============================================
+    // LOAD ATTENDANCE
+    // ============================================
+
+    async function loadAttendanceByDate() {
+
+        const selectedDate =
+            document.getElementById(
+                "attendanceDate"
+            ).value;
+
+
+        const table =
+            document.getElementById(
+                "attendanceTable"
+            );
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td colspan="7">
+                    Loading...
+                </td>
+
+            </tr>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${ADMIN_API}/api/admin/attendance/date/${selectedDate}`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load attendance."
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.length) {
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="7">
+                            No employees found.
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+
+            }
+
+
+            table.innerHTML =
+                data.map(
+                    employee => {
+
+                        let statusClass =
+                            "absent";
+
+
+                        if (
+                            employee.attendance_state
+                            === "Checked In"
+                        ) {
+
+                            statusClass =
+                                "checked";
+
+                        }
+
+
+                        if (
+                            employee.attendance_state
+                            === "Checked Out"
+                        ) {
+
+                            statusClass =
+                                "present";
+
+                        }
+
+
+                        return `
+
+                        <tr>
+
+                            <td>
+                                ${employee.employee_id}
+                            </td>
+
+                            <td>
+                                ${employee.name}
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.department
+                                    || "--"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.check_in
+                                    || "--"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.check_out
+                                    || "--"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.working_hours
+                                    ?? "--"
+                                }
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="status ${statusClass}"
+                                >
+
+                                    ${
+                                        employee.attendance_state
+                                        || "Absent"
+                                    }
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        `;
+
+                    }
+                ).join("");
+
+
+        } catch(error) {
+
+            console.error(
+                "Attendance error:",
+                error
+            );
+
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7">
+
+                        Unable to load attendance data.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    // ============================================
+    // LOAD EMPLOYEES
+    // ============================================
+
+    async function loadEmployees() {
+
+        const table =
+            document.getElementById(
+                "employeeTable"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${ADMIN_API}/api/admin/employees`
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.length) {
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="7">
+                            No employees found.
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+
+            }
+
+
+            table.innerHTML =
+                data.map(
+                    employee => {
+
+                        return `
+
+                        <tr>
+
+                            <td>
+                                ${employee.employee_id}
+                            </td>
+
+                            <td>
+                                ${employee.name}
+                            </td>
+
+                            <td>
+                                ${employee.email || "--"}
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.department
+                                    || "--"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.designation
+                                    || "--"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    employee.salary
+                                    ?? "--"
+                                }
+                            </td>
+
+                            <td>
+
+                                ${
+                                    employee.is_active
+                                        ? "Active"
+                                        : "Inactive"
+                                }
+
+                            </td>
+
+                        </tr>
+
+                        `;
+
+                    }
+                ).join("");
+
+
+        } catch(error) {
+
+            console.error(
+                "Employee error:",
+                error
+            );
+
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7">
+
+                        Unable to load employee data.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    // ============================================
+    // LOGOUT
+    // ============================================
+
+    function logout() {
+
+        window.location.href =
+            "../index.html";
+
+    }
+
+
+    // ============================================
+    // INITIAL LOAD
+    // ============================================
+
+    async function initialize() {
+
+        await loadSummary();
+
+        await loadAttendanceByDate();
+
+        await loadEmployees();
+
+    }
+
+
+    initialize();
+
+
+    // Refresh dashboard every 30 seconds
+
+    setInterval(
+        async function() {
+
+            await loadSummary();
+
+            await loadAttendanceByDate();
+
+        },
+        30000
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local database
+database/*.db
+
+# Face recognition data
+face_embeddings/
+face_data/
+employee_photos/
+attendance_photos/
+
+# Generated Excel reports
+excel_reports/
+
+# Environment/secrets
+.env
+*.env
+
+# IDE
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

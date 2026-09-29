@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BEL Workforce - Attendance
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef3f8,
+                    #dce7f2
+                );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+
+        }
+
+
+        /* =================================
+           MAIN CARD
+        ================================= */
+
+        .attendance-container {
+
+            width: 100%;
+            max-width: 850px;
+
+            background: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 8px 30px
+                rgba(0, 0, 0, 0.12);
+
+            overflow: hidden;
+
+        }
+
+
+        /* =================================
+           HEADER
+        ================================= */
+
+        .header {
+
+            background: #17365d;
+
+            color: white;
+
+            padding: 25px;
+
+            text-align: center;
+
+        }
+
+        .header h1 {
+
+            font-size: 30px;
+
+            margin-bottom: 7px;
+
+        }
+
+        .header p {
+
+            font-size: 14px;
+
+            opacity: 0.9;
+
+        }
+
+
+        /* =================================
+           CONTENT
+        ================================= */
+
+        .content {
+
+            padding: 30px;
+
+        }
+
+
+        /* =================================
+           EMPLOYEE ID
+        ================================= */
+
+        .form-group {
+
+            margin-bottom: 20px;
+
+        }
+
+        .form-group label {
+
+            display: block;
+
+            font-weight: bold;
+
+            color: #333;
+
+            margin-bottom: 8px;
+
+        }
+
+        .form-group input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 7px;
+
+            font-size: 16px;
+
+            outline: none;
+
+        }
+
+        .form-group input:focus {
+
+            border-color: #17365d;
+
+        }
+
+
+        /* =================================
+           CURRENT TIME
+        ================================= */
+
+        .time-box {
+
+            text-align: center;
+
+            background: #f2f6fa;
+
+            border-radius: 8px;
+
+            padding: 15px;
+
+            margin-bottom: 25px;
+
+        }
+
+        .time-box .date {
+
+            color: #666;
+
+            font-size: 14px;
+
+        }
+
+        .time-box .time {
+
+            color: #17365d;
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            margin-top: 5px;
+
+        }
+
+
+        /* =================================
+           ACTION BUTTONS
+        ================================= */
+
+        .actions {
+
+            display: flex;
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+
+        }
+
+        .attendance-btn {
+
+            flex: 1;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+        .check-in {
+
+            background: #198754;
+
+        }
+
+        .check-in:hover {
+
+            background: #157347;
+
+        }
+
+        .check-out {
+
+            background: #dc3545;
+
+        }
+
+        .check-out:hover {
+
+            background: #bb2d3b;
+
+        }
+
+        .attendance-btn:disabled {
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* =================================
+           CAMERA STATUS
+        ================================= */
+
+        .camera-status {
+
+            background: #f8f9fa;
+
+            border-radius: 8px;
+
+            padding: 18px;
+
+            text-align: center;
+
+            border: 1px solid #e1e5e9;
+
+        }
+
+        .camera-status h3 {
+
+            color: #17365d;
+
+            margin-bottom: 8px;
+
+        }
+
+        .camera-status p {
+
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =================================
+           LOADING
+        ================================= */
+
+        .loading {
+
+            display: none;
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #17365d;
+
+            font-weight: bold;
+
+        }
+
+        .spinner {
+
+            display: inline-block;
+
+            width: 18px;
+
+            height: 18px;
+
+            border: 3px solid #ddd;
+
+            border-top: 3px solid #17365d;
+
+            border-radius: 50%;
+
+            animation: spin 1s linear infinite;
+
+            vertical-align: middle;
+
+            margin-right: 8px;
+
+        }
+
+        @keyframes spin {
+
+            100% {
+
+                transform: rotate(360deg);
+
+            }
+
+        }
+
+
+        /* =================================
+           MESSAGE
+        ================================= */
+
+        .message {
+
+            display: none;
+
+            padding: 15px;
+
+            border-radius: 7px;
+
+            margin-top: 20px;
+
+            text-align: center;
+
+            font-weight: bold;
+
+        }
+
+        .success {
+
+            background: #d1e7dd;
+
+            color: #0f5132;
+
+        }
+
+        .error {
+
+            background: #f8d7da;
+
+            color: #842029;
+
+        }
+
+        .info {
+
+            background: #cff4fc;
+
+            color: #055160;
+
+        }
+
+
+        /* =================================
+           FOOTER
+        ================================= */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 15px;
+
+            color: #777;
+
+            font-size: 12px;
+
+            border-top: 1px solid #eee;
+
+        }
+
+
+        /* =================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 600px) {
+
+            .content {
+
+                padding: 20px;
+
+            }
+
+            .actions {
+
+                flex-direction: column;
+
+            }
+
+            .header h1 {
+
+                font-size: 24px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="attendance-container">
+
+
+    <!-- =================================
+         HEADER
+    ================================= -->
+
+    <div class="header">
+
+        <h1>
+            BEL Workforce
+        </h1>
+
+        <p>
+            Smart Employee Attendance System
+        </p>
+
+    </div>
+
+
+    <!-- =================================
+         CONTENT
+    ================================= -->
+
+    <div class="content">
+
+
+        <!-- EMPLOYEE ID -->
+
+        <div class="form-group">
+
+            <label for="employeeId">
+
+                Employee ID
+
+            </label>
+
+            <input
+                type="text"
+                id="employeeId"
+                placeholder="Enter Employee ID"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <!-- CURRENT DATE/TIME -->
+
+        <div class="time-box">
+
+            <div
+                class="date"
+                id="currentDate"
+            >
+                --
+            </div>
+
+            <div
+                class="time"
+                id="currentTime"
+            >
+                --
+            </div>
+
+        </div>
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="actions">
+
+            <button
+                class="attendance-btn check-in"
+                id="checkInButton"
+                onclick="startAttendance('check_in')"
+            >
+
+                Check In
+
+            </button>
+
+
+            <button
+                class="attendance-btn check-out"
+                id="checkOutButton"
+                onclick="startAttendance('check_out')"
+            >
+
+                Check Out
+
+            </button>
+
+        </div>
+
+
+        <!-- CAMERA STATUS -->
+
+        <div class="camera-status">
+
+            <h3>
+                Camera Verification
+            </h3>
+
+            <p id="cameraStatus">
+
+                Enter your Employee ID and select
+                Check In or Check Out.
+
+                <br><br>
+
+                The system will open the camera,
+                perform liveness verification,
+                and recognize your registered face.
+
+            </p>
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        <div
+            class="loading"
+            id="loading"
+        >
+
+            <span class="spinner"></span>
+
+            Attendance verification is in progress.
+            Please follow the camera instructions.
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            class="message"
+            id="message"
+        >
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         FOOTER
+    ================================= -->
+
+    <div class="footer">
+
+        BEL Workforce |
+        Secure Face Recognition Attendance
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // ============================================
+    // CAMERA ATTENDANCE API
+    // ============================================
+
+    const CAMERA_API =
+        "http://127.0.0.1:8003";
+
+
+    // ============================================
+    // ELEMENTS
+    // ============================================
+
+    const employeeIdInput =
+        document.getElementById(
+            "employeeId"
+        );
+
+    const checkInButton =
+        document.getElementById(
+            "checkInButton"
+        );
+
+    const checkOutButton =
+        document.getElementById(
+            "checkOutButton"
+        );
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+    const cameraStatus =
+        document.getElementById(
+            "cameraStatus"
+        );
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    // ============================================
+    // DATE/TIME
+    // ============================================
+
+    function updateDateTime() {
+
+        const now =
+            new Date();
+
+
+        document.getElementById(
+            "currentDate"
+        ).textContent =
+            now.toLocaleDateString(
+                "en-IN",
+                {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+
+        document.getElementById(
+            "currentTime"
+        ).textContent =
+            now.toLocaleTimeString(
+                "en-IN",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
+            );
+
+    }
+
+
+    updateDateTime();
+
+    setInterval(
+        updateDateTime,
+        1000
+    );
+
+
+    // ============================================
+    // SHOW MESSAGE
+    // ============================================
+
+    function showMessage(
+        text,
+        type
+    ) {
+
+        message.textContent =
+            text;
+
+        message.className =
+            "message " + type;
+
+        message.style.display =
+            "block";
+
+    }
+
+
+    // ============================================
+    // START ATTENDANCE
+    // ============================================
+
+    async function startAttendance(
+        action
+    ) {
+
+        const employeeId =
+            employeeIdInput.value
+                .trim()
+                .toUpperCase();
+
+
+        // ----------------------------------------
+        // Employee ID validation
+        // ----------------------------------------
+
+        if (!employeeId) {
+
+            showMessage(
+                "Please enter your Employee ID.",
+                "error"
+            );
+
+            employeeIdInput.focus();
+
+            return;
+
+        }
+
+
+        // ----------------------------------------
+        // Disable buttons
+        // ----------------------------------------
+
+        checkInButton.disabled =
+            true;
+
+        checkOutButton.disabled =
+            true;
+
+
+        loading.style.display =
+            "block";
+
+
+        message.style.display =
+            "none";
+
+
+        // ----------------------------------------
+        // Camera status
+        // ----------------------------------------
+
+        cameraStatus.innerHTML = `
+
+            <strong>
+                ${
+                    action === "check_in"
+                        ? "Check-In"
+                        : "Check-Out"
+                }
+                verification started.
+            </strong>
+
+            <br><br>
+
+            Please follow the instructions
+            in the camera window.
+
+        `;
+
+
+        try {
+
+            // ------------------------------------
+            // Send request to camera API
+            // ------------------------------------
+
+            const response =
+                await fetch(
+                    `${CAMERA_API}/api/camera-attendance/scan`,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                employee_id:
+                                    employeeId,
+
+                                action:
+                                    action
+
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            // ------------------------------------
+            // API error
+            // ------------------------------------
+
+            if (!response.ok) {
+
+                throw new Error(
+
+                    data.detail ||
+                    data.message ||
+                    "Attendance verification failed."
+
+                );
+
+            }
+
+
+            // ------------------------------------
+            // Success
+            // ------------------------------------
+
+            if (data.success) {
+
+                showMessage(
+
+                    data.message ||
+                    (
+                        action === "check_in"
+                            ? "Check-In successful."
+                            : "Check-Out successful."
+                    ),
+
+                    "success"
+
+                );
+
+
+                cameraStatus.innerHTML = `
+
+                    <strong>
+                        Attendance marked successfully.
+                    </strong>
+
+                    <br><br>
+
+                    Employee ID:
+                    ${employeeId}
+
+                    <br>
+
+                    ${
+                        action === "check_in"
+                            ? "Check-In"
+                            : "Check-Out"
+                    } completed.
+
+                `;
+
+            }
+
+
+            // ------------------------------------
+            // Process completed but unsuccessful
+            // ------------------------------------
+
+            else {
+
+                showMessage(
+
+                    data.message ||
+                    "Attendance was not marked.",
+
+                    "error"
+
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Attendance error:",
+                error
+            );
+
+
+            showMessage(
+
+                error.message ||
+                "Unable to complete attendance.",
+
+                "error"
+
+            );
+
+
+            cameraStatus.innerHTML = `
+
+                <strong>
+                    Verification failed.
+                </strong>
+
+                <br><br>
+
+                Please try again.
+
+            `;
+
+        }
+
+
+        finally {
+
+            loading.style.display =
+                "none";
+
+
+            checkInButton.disabled =
+                false;
+
+            checkOutButton.disabled =
+                false;
+
+        }
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BEL Workforce - Employee Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .header {
+            background: #17365d;
+            color: white;
+            padding: 18px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 24px;
+        }
+
+        .brand p {
+            margin-top: 4px;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            border: none;
+            color: white;
+
+            padding: 10px 18px;
+            border-radius: 6px;
+
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #bb2d3b;
+        }
+
+        /* ==============================
+           MAIN
+        ============================== */
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* ==============================
+           EMPLOYEE INFO
+        ============================== */
+
+        .employee-info {
+            background: white;
+            border-radius: 10px;
+
+            padding: 22px;
+            margin-bottom: 25px;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .employee-info h2 {
+            color: #17365d;
+            margin-bottom: 8px;
+        }
+
+        .employee-info p {
+            margin-top: 5px;
+            color: #555;
+        }
+
+        /* ==============================
+           CARDS
+        ============================== */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(210px, 1fr));
+
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .card .value {
+            font-size: 25px;
+            font-weight: bold;
+            color: #17365d;
+        }
+
+        /* ==============================
+           ATTENDANCE SECTION
+        ============================== */
+
+        .section {
+            background: white;
+            border-radius: 10px;
+
+            padding: 25px;
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: #17365d;
+            margin-bottom: 20px;
+        }
+
+        .attendance-status {
+            padding: 15px;
+
+            border-radius: 8px;
+
+            background: #f1f5f9;
+
+            margin-bottom: 20px;
+        }
+
+        .status-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .status-value {
+            font-size: 20px;
+            font-weight: bold;
+
+            margin-top: 5px;
+
+            color: #17365d;
+        }
+
+        /* ==============================
+           BUTTONS
+        ============================== */
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .attendance-btn {
+            border: none;
+
+            padding: 13px 25px;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            min-width: 150px;
+        }
+
+        .check-in {
+            background: #198754;
+            color: white;
+        }
+
+        .check-in:hover {
+            background: #157347;
+        }
+
+        .check-out {
+            background: #dc3545;
+            color: white;
+        }
+
+        .check-out:hover {
+            background: #bb2d3b;
+        }
+
+        .attendance-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        /* ==============================
+           RECENT ATTENDANCE
+        ============================== */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #17365d;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* ==============================
+           MESSAGE
+        ============================== */
+
+        #message {
+            display: none;
+
+            padding: 15px;
+
+            border-radius: 7px;
+
+            margin-bottom: 20px;
+
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .info-message {
+            background: #cff4fc;
+            color: #055160;
+        }
+
+        /* ==============================
+           LOADING
+        ============================== */
+
+        #loading {
+            display: none;
+
+            margin-top: 15px;
+
+            color: #17365d;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 15px;
+            }
+
+            .brand h1 {
+                font-size: 19px;
+            }
+
+            .container {
+                margin-top: 20px;
+                padding: 0 12px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .attendance-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
+    <div class="header">
+
+        <div class="brand">
+
+            <h1>BEL Workforce</h1>
+
+            <p>
+                Smart Employee Attendance & Payroll Management System
+            </p>
+
+        </div>
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+
+    <!-- ==============================
+         MAIN
+    ============================== -->
+
+    <div class="container">
+
+
+        <!-- EMPLOYEE INFORMATION -->
+
+        <div class="employee-info">
+
+            <h2 id="employeeName">
+                Employee
+            </h2>
+
+            <p>
+                Employee ID:
+                <strong id="employeeId">
+                    --
+                </strong>
+            </p>
+
+            <p>
+                Date:
+                <strong id="todayDate">
+                    --
+                </strong>
+            </p>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div id="message"></div>
+
+
+        <!-- ==============================
+             SUMMARY CARDS
+        ============================== -->
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>
+                    Today's Status
+                </h3>
+
+                <div
+                    class="value"
+                    id="todayStatus"
+                >
+                    --
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Check-In
+                </h3>
+
+                <div
+                    class="value"
+                    id="checkInTime"
+                >
+                    --
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Check-Out
+                </h3>
+
+                <div
+                    class="value"
+                    id="checkOutTime"
+                >
+                    --
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Working Hours
+                </h3>
+
+                <div
+                    class="value"
+                    id="workingHours"
+                >
+                    --
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================
+             ATTENDANCE
+        ============================== -->
+
+        <div class="section">
+
+            <h2>
+                Today's Attendance
+            </h2>
+
+
+            <div class="attendance-status">
+
+                <div class="status-label">
+                    Current Status
+                </div>
+
+                <div
+                    class="status-value"
+                    id="attendanceStatus"
+                >
+                    Not Checked In
+                </div>
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    id="checkInButton"
+                    class="attendance-btn check-in"
+                    onclick="startAttendance('check_in')"
+                >
+                    Check In
+                </button>
+
+
+                <button
+                    id="checkOutButton"
+                    class="attendance-btn check-out"
+                    onclick="startAttendance('check_out')"
+                >
+                    Check Out
+                </button>
+
+            </div>
+
+
+            <div id="loading">
+                Starting camera attendance...
+                Please wait.
+            </div>
+
+        </div>
+
+
+        <!-- ==============================
+             RECENT ATTENDANCE
+        ============================== -->
+
+        <div class="section">
+
+            <h2>
+                Recent Attendance
+            </h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Check-In
+                            </th>
+
+                            <th>
+                                Check-Out
+                            </th>
+
+                            <th>
+                                Working Hours
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="recentAttendance">
+
+                        <tr>
+
+                            <td colspan="5">
+                                Loading...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // ====================================================
+        // API URLS
+        // ====================================================
+
+        const ATTENDANCE_API =
+            "http://127.0.0.1:8002";
+
+        const CAMERA_API =
+            "http://127.0.0.1:8003";
+
+
+        // ====================================================
+        // SESSION DATA
+        // ====================================================
+
+        const employeeId =
+            sessionStorage.getItem("employeeId");
+
+        const employeeName =
+            sessionStorage.getItem("employeeName");
+
+
+        // ====================================================
+        // CHECK LOGIN
+        // ====================================================
+
+        if (!employeeId) {
+
+            window.location.href = "../index.html";
+
+        }
+
+
+        // ====================================================
+        // DISPLAY BASIC INFORMATION
+        // ====================================================
+
+        document.getElementById(
+            "employeeId"
+        ).textContent = employeeId || "--";
+
+
+        document.getElementById(
+            "employeeName"
+        ).textContent =
+            employeeName || "Employee";
+
+
+        document.getElementById(
+            "todayDate"
+        ).textContent =
+            new Date().toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }
+            );
+
+
+        // ====================================================
+        // MESSAGE
+        // ====================================================
+
+        function showMessage(
+            message,
+            type
+        ) {
+
+            const box =
+                document.getElementById(
+                    "message"
+                );
+
+            box.textContent = message;
+
+            box.className = "";
+
+            box.classList.add(
+                type === "success"
+                    ? "success-message"
+                    : type === "error"
+                    ? "error-message"
+                    : "info-message"
+            );
+
+            box.style.display = "block";
+
+        }
+
+
+        // ====================================================
+        // LOAD EMPLOYEE DATA
+        // ====================================================
+
+        async function loadEmployeeData() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${ATTENDANCE_API}/api/employee/${employeeId}`
+                    );
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const data =
+                    await response.json();
+
+                if (data.name) {
+
+                    document.getElementById(
+                        "employeeName"
+                    ).textContent =
+                        data.name;
+
+                    sessionStorage.setItem(
+                        "employeeName",
+                        data.name
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Employee API error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        // ====================================================
+        // LOAD TODAY'S ATTENDANCE
+        // ====================================================
+
+       async function loadTodayAttendance() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${ATTENDANCE_API}/api/attendance/${employeeId}/today`
+            );
+
+        if (!response.ok) {
+
+            console.error(
+                "Today attendance API returned:",
+                response.status
+            );
+
+            return;
+
+        }
+
+        const responseData =
+            await response.json();
+
+        console.log(
+            "Today's attendance response:",
+            responseData
+        );
+
+        // Handle different possible API response formats
+        const data =
+            responseData.attendance ||
+            responseData.record ||
+            responseData.data ||
+            responseData;
+
+        updateAttendanceUI(data);
+
+    } catch (error) {
+
+        console.error(
+            "Attendance API error:",
+            error
+        );
+
+    }
+
+}
+
+
+        // ====================================================
+        // UPDATE ATTENDANCE UI
+        // ====================================================
+
+        function updateAttendanceUI(data) {
+
+    console.log(
+        "Updating attendance UI with:",
+        data
+    );
+
+    if (!data) {
+
+        data = {};
+
+    }
+
+
+    const checkIn =
+        data.check_in ||
+        data.checkIn ||
+        null;
+
+
+    const checkOut =
+        data.check_out ||
+        data.checkOut ||
+        null;
+
+
+    const hours =
+        data.working_hours ??
+        data.workingHours ??
+        0;
+
+
+    document.getElementById(
+        "checkInTime"
+    ).textContent =
+        checkIn || "--";
+
+
+    document.getElementById(
+        "checkOutTime"
+    ).textContent =
+        checkOut || "--";
+
+
+    document.getElementById(
+        "workingHours"
+    ).textContent =
+        hours !== null &&
+        hours !== undefined
+            ? `${hours} hrs`
+            : "--";
+
+
+    let status =
+        "Not Checked In";
+
+
+    if (checkIn && !checkOut) {
+
+        status =
+            "Checked In";
+
+    }
+
+
+    if (checkIn && checkOut) {
+
+        status =
+            "Checked Out";
+
+    }
+
+
+    document.getElementById(
+        "todayStatus"
+    ).textContent =
+        status;
+
+
+    document.getElementById(
+        "attendanceStatus"
+    ).textContent =
+        status;
+
+
+    const checkInButton =
+        document.getElementById(
+            "checkInButton"
+        );
+
+
+    const checkOutButton =
+        document.getElementById(
+            "checkOutButton"
+        );
+
+
+    if (!checkIn) {
+
+        checkInButton.disabled =
+            false;
+
+        checkOutButton.disabled =
+            true;
+
+    }
+
+    else if (
+        checkIn &&
+        !checkOut
+    ) {
+
+        checkInButton.disabled =
+            true;
+
+        checkOutButton.disabled =
+            false;
+
+    }
+
+    else {
+
+        checkInButton.disabled =
+            true;
+
+        checkOutButton.disabled =
+            true;
+
+    }
+
+}
+
+        // ====================================================
+        // CAMERA ATTENDANCE
+        // ====================================================
+
+        async function startAttendance(
+            action
+        ) {
+
+            const checkInButton =
+                document.getElementById(
+                    "checkInButton"
+                );
+
+            const checkOutButton =
+                document.getElementById(
+                    "checkOutButton"
+                );
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+
+            // Disable both buttons
+            checkInButton.disabled =
+                true;
+
+            checkOutButton.disabled =
+                true;
+
+            loading.style.display =
+                "block";
+
+
+            showMessage(
+                "Camera attendance is starting. Please follow the liveness instructions.",
+                "info"
+            );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${CAMERA_API}/api/camera-attendance/scan`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                employee_id:
+                                    employeeId,
+
+                                action:
+                                    action
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        data.message ||
+                        "Attendance failed."
+                    );
+
+                }
+
+
+                if (data.success) {
+
+                    showMessage(
+                        data.message ||
+                        "Attendance completed successfully.",
+                        "success"
+                    );
+
+                }
+                else {
+
+                    showMessage(
+                        data.message ||
+                        "Attendance was not completed.",
+                        "error"
+                    );
+
+                }
+
+
+                // Refresh dashboard
+                await loadTodayAttendance();
+
+                await loadRecentAttendance();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Camera attendance error:",
+                    error
+                );
+
+
+                showMessage(
+                    error.message ||
+                    "Unable to complete camera attendance.",
+                    "error"
+                );
+
+
+                // Refresh UI after error
+                await loadTodayAttendance();
+
+            }
+            finally {
+
+                loading.style.display =
+                    "none";
+
+                await loadTodayAttendance();
+
+            }
+
+        }
+
+
+        // ====================================================
+        // RECENT ATTENDANCE
+        // ====================================================
+
+        async function loadRecentAttendance() {
+
+            const table =
+                document.getElementById(
+                    "recentAttendance"
+                );
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${ATTENDANCE_API}/api/attendance/${employeeId}/recent`
+                    );
+
+                if (!response.ok) {
+
+                    table.innerHTML =
+                        `
+                        <tr>
+                            <td colspan="5">
+                                No attendance records found.
+                            </td>
+                        </tr>
+                        `;
+
+                    return;
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                const records =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            data.attendance ||
+                            data.records ||
+                            []
+                        );
+
+
+                if (!records.length) {
+
+                    table.innerHTML =
+                        `
+                        <tr>
+                            <td colspan="5">
+                                No attendance records found.
+                            </td>
+                        </tr>
+                        `;
+
+                    return;
+
+                }
+
+
+                table.innerHTML =
+                    records.map(
+                        record => {
+
+                            return `
+                            <tr>
+
+                                <td>
+                                    ${record.date || "--"}
+                                </td>
+
+                                <td>
+                                    ${record.check_in || "--"}
+                                </td>
+
+                                <td>
+                                    ${record.check_out || "--"}
+                                </td>
+
+                                <td>
+                                    ${
+                                        record.working_hours !== null &&
+                                        record.working_hours !== undefined
+                                            ? record.working_hours
+                                            : "--"
+                                    }
+                                </td>
+
+                                <td>
+                                    ${record.status || "--"}
+                                </td>
+
+                            </tr>
+                            `;
+
+                        }
+                    ).join("");
+
+
+            } catch (error) {
+
+                console.error(
+                    "Recent attendance error:",
+                    error
+                );
+
+                table.innerHTML =
+                    `
+                    <tr>
+                        <td colspan="5">
+                            Unable to load attendance history.
+                        </td>
+                    </tr>
+                    `;
+
+            }
+
+        }
+
+
+        // ====================================================
+        // LOGOUT
+        // ====================================================
+
+        function logout() {
+
+            sessionStorage.removeItem(
+                "employeeId"
+            );
+
+            sessionStorage.removeItem(
+                "employeeName"
+            );
+
+            window.location.href =
+                "../index.html";
+
+        }
+
+
+        // ====================================================
+        // INITIAL LOAD
+        // ====================================================
+
+        async function initializeDashboard() {
+
+            await loadEmployeeData();
+
+            await loadTodayAttendance();
+
+            await loadRecentAttendance();
+
+        }
+
+
+        initializeDashboard();
+
+    </script>
+
+</body>
+</html>

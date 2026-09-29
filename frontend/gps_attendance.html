@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Smart Attendance - GPS Verification</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #eeeeee;
+            line-height: 1.6;
+        }
+
+        .success {
+            background: #dff5e1;
+        }
+
+        .error {
+            background: #ffdede;
+        }
+
+        .info {
+            background: #e4efff;
+        }
+
+        .location-data {
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>Smart Attendance</h1>
+
+    <h2>GPS Verification</h2>
+
+    <p>
+        Attendance is permitted only inside
+        the authorized BEL Bengaluru attendance area.
+    </p>
+
+    <button onclick="verifyLocation()">
+        Verify My Location
+    </button>
+
+    <div
+        id="status"
+        class="status"
+    >
+        Waiting for location verification...
+    </div>
+
+    <div
+        id="locationData"
+        class="location-data"
+    ></div>
+
+</div>
+
+
+<script>
+
+
+// ============================================================
+// BACKEND URL
+// ============================================================
+
+const API_URL =
+    "http://127.0.0.1:8000";
+
+
+// ============================================================
+// STATUS DISPLAY
+// ============================================================
+
+function showStatus(
+    message,
+    type
+) {
+
+    const status =
+        document.getElementById("status");
+
+    status.innerText = message;
+
+    status.className =
+        "status " + type;
+}
+
+
+// ============================================================
+// LOCATION VERIFICATION
+// ============================================================
+
+function verifyLocation() {
+
+    showStatus(
+        "Requesting your GPS location...",
+        "info"
+    );
+
+    document.getElementById(
+        "locationData"
+    ).innerHTML = "";
+
+
+    // Check browser support
+
+    if (!navigator.geolocation) {
+
+        showStatus(
+            "This browser does not support GPS location.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        async function(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+            const accuracy =
+                position.coords.accuracy;
+
+
+            document.getElementById(
+                "locationData"
+            ).innerHTML =
+
+                "<b>Latitude:</b> " +
+                latitude +
+                "<br>" +
+
+                "<b>Longitude:</b> " +
+                longitude +
+                "<br>" +
+
+                "<b>GPS Accuracy:</b> " +
+                accuracy.toFixed(2) +
+                " meters";
+
+
+            showStatus(
+                "Checking BEL attendance area...",
+                "info"
+            );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_URL +
+                        "/api/location/verify",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                latitude:
+                                    latitude,
+
+                                longitude:
+                                    longitude,
+
+                                accuracy:
+                                    accuracy
+
+                            })
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (result.allowed) {
+
+                    showStatus(
+                        "LOCATION VERIFIED\n\n" +
+                        result.message,
+                        "success"
+                    );
+
+                }
+
+                else {
+
+                    showStatus(
+                        "LOCATION REJECTED\n\n" +
+                        result.message,
+                        "error"
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                showStatus(
+                    "Could not connect to the attendance server.",
+                    "error"
+                );
+
+            }
+
+        },
+
+
+        function(error) {
+
+            let message =
+                "Unable to get your location.";
+
+            if (error.code === 1) {
+
+                message =
+                    "Location permission was denied. " +
+                    "Please allow location access.";
+
+            }
+
+            else if (error.code === 2) {
+
+                message =
+                    "Your location could not be determined.";
+
+            }
+
+            else if (error.code === 3) {
+
+                message =
+                    "Location request timed out.";
+
+            }
+
+
+            showStatus(
+                message,
+                "error"
+            );
+
+        },
+
+
+        {
+
+            enableHighAccuracy: true,
+
+            maximumAge: 0,
+
+            timeout: 15000
+
+        }
+
+    );
+
+}
+
+
+</script>
+
+</body>
+
+</html>

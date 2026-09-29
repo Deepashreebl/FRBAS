@@ -1,0 +1,58 @@
+function login() {
+    const role = document.getElementById("role").value;
+    const userId = document.getElementById("userId").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("loginMessage");
+
+    if (userId === "" || password === "") {
+        message.innerHTML = "Please enter User ID and Password.";
+        message.style.color = "red";
+        return;
+    }
+
+    if (role === "admin" && userId === "admin" && password === "admin123") {
+        message.innerHTML = "Login successful!";
+        message.style.color = "green";
+
+        window.location.href = "admin/dashboard.html";
+        return;
+    }
+
+    if (role === "employee" && userId === "EMP001" && password === "employee123") {
+        message.innerHTML = "Login successful!";
+        message.style.color = "green";
+
+        window.location.href = "employee/dashboard.html";
+        return;
+    }
+
+    message.innerHTML = "Invalid User ID or Password.";
+    message.style.color = "red";
+}
+
+
+function forgotPassword() {
+    alert("Please contact the BEL Workforce Admin / HR team to reset your password.");
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const togglePassword = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
+
+    if (togglePassword) {
+        togglePassword.onclick = function () {
+
+            if (password.type === "password") {
+                password.type = "text";
+                togglePassword.textContent = "Hide";
+            } else {
+                password.type = "password";
+                togglePassword.textContent = "Show";
+            }
+
+        };
+    }
+
+});
