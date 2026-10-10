@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-multipart
+opencv-contrib-python-headless
+numpy
+openpyxl
+sqlalchemy
+psycopg[binary]
+python-dotenv
+pwdlib[argon2]

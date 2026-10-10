@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BEL WORKFORCE - Employee Dashboard</title>
+
+<style>
+:root {
+    --navy: #14213d;
+    --blue: #2155cd;
+    --blue-light: #edf3ff;
+    --background: #f4f6fb;
+    --text: #172033;
+    --muted: #778197;
+    --border: #e6eaf1;
+    --white: #fff;
+    --green: #16845b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+button, input { font: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+
+/* LOGIN */
+
+.login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 34px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 12px 40px #14213d12;
+}
+
+.brand {
+    text-align: center;
+    font-size: 27px;
+    font-weight: 800;
+    color: var(--blue);
+}
+
+.login-card h2 {
+    text-align: center;
+    margin: 16px 0 8px;
+}
+
+.login-card > p {
+    text-align: center;
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin: 15px 0 7px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d6dce7;
+    border-radius: 8px;
+    outline: none;
+    background: white;
+    color: var(--text);
+}
+
+input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px #2155cd15;
+}
+
+.password-row {
+    display: flex;
+    gap: 8px;
+}
+
+.password-row input { flex: 1; }
+
+.eye-button {
+    width: 46px;
+    border: 1px solid #d6dce7;
+    border-radius: 8px;
+    background: white;
+}
+
+.primary-button, .secondary-button, .danger-button {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.primary-button {
+    background: var(--blue);
+    color: white;
+}
+
+.primary-button:hover { background: #1945ad; }
+
+.secondary-button {
+    background: #e9eef8;
+    color: #243d70;
+}
+
+.danger-button {
+    background: #fff0f0;
+    color: #b42332;
+}
+
+.full-button {
+    width: 100%;
+    margin-top: 22px;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 20;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 16px;
+    overflow-y: auto;
+    background: var(--navy);
+    color: white;
+}
+
+.sidebar-brand {
+    padding: 5px 12px 25px;
+    border-bottom: 1px solid #ffffff1c;
+}
+
+.sidebar-brand h2 {
+    color: white;
+    margin: 0;
+    font-size: 21px;
+}
+
+.sidebar-brand p {
+    margin: 8px 0 0;
+    color: #bdc8dd;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.nav-heading {
+    margin: 24px 12px 10px;
+    color: #94a3bf;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 3px 0;
+    padding: 13px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #d5deed;
+    text-align: left;
+    font-size: 13px;
+}
+
+.nav-button:hover {
+    background: #ffffff12;
+    color: white;
+}
+
+.nav-button.active {
+    background: var(--blue);
+    color: white;
+}
+
+.nav-icon {
+    width: 22px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.sidebar-bottom .nav-button {
+    border-top: 1px solid #ffffff18;
+    padding-top: 18px;
+}
+
+.main-area { min-height: 100vh; margin-left: 250px; }
+
+.topbar {
+    min-height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 17px 30px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar h1 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.topbar p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-weight: 800;
+}
+
+.menu-toggle {
+    display: none;
+    padding: 8px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    font-size: 20px;
+}
+
+.content {
+    max-width: 1400px;
+    margin: auto;
+    padding: 30px;
+}
+
+.section-view { display: none; }
+.section-view.active { display: block; }
+
+.welcome-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.welcome-row h2 {
+    margin: 0 0 8px;
+    font-size: 23px;
+}
+
+.welcome-row p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+}
+
+.stat-icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--blue-light);
+    font-size: 22px;
+}
+
+.stat-card:nth-child(2) .stat-icon { background: #e7f8ef; }
+.stat-card:nth-child(3) .stat-icon { background: #fff3df; }
+
+.stat-card p {
+    margin: 0 0 7px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.stat-card strong { font-size: 22px; }
+
+.panel {
+    margin-bottom: 22px;
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    box-shadow: 0 3px 12px #14213d05;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.panel-heading h3 { margin: 0; font-size: 16px; }
+
+.panel-heading p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.profile-item {
+    padding: 17px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 0;
+}
+
+.profile-item p {
+    margin: 0 0 9px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.profile-item strong {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.table-wrap { width: 100%; overflow-x: auto; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+th, td {
+    padding: 13px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+th {
+    background: #f7f9fd;
+    color: #59667c;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.empty-state {
+    padding: 26px 12px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 13px;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status.success {
+    color: var(--green);
+    background: #e7f8ef;
+}
+
+.status.pending {
+    color: #946200;
+    background: #fff3d8;
+}
+
+.info-note {
+    padding: 15px;
+    border-radius: 9px;
+    background: #f5f7fb;
+    color: #59667c;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+#message {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 50;
+    display: none;
+    max-width: min(420px, calc(100vw - 44px));
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: #172033;
+    color: white;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-shadow: 0 8px 25px #0002;
+}
+
+#message.show { display: block; }
+#message.error { background: #a52836; }
+#message.success { background: #176b4a; }
+
+.sidebar-overlay { display: none; }
+
+@media (max-width: 1000px) {
+    .sidebar { width: 230px; }
+    .main-area { margin-left: 230px; }
+    .content { padding: 24px 20px; }
+    .stats-grid { gap: 10px; }
+    .stat-card { padding: 15px; }
+    .profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+    .sidebar {
+        width: 250px;
+        transform: translateX(-100%);
+        transition: transform .22s ease;
+    }
+
+    .sidebar.open { transform: translateX(0); }
+    .main-area { margin-left: 0; }
+    .menu-toggle { display: inline-block; }
+
+    .sidebar-overlay.visible {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 15;
+        background: #10182770;
+    }
+
+    .topbar { padding: 15px 17px; }
+    .topbar h1 { font-size: 18px; }
+    .user-badge span:last-child { display: none; }
+    .content { padding: 22px 15px 35px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .stat-card { padding: 17px; }
+    .panel { padding: 18px; }
+    .profile-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 420px) {
+    .login-card { padding: 24px 19px; }
+    .topbar { gap: 8px; }
+    .user-badge { padding: 6px; }
+    .welcome-row h2 { font-size: 20px; }
+    .button-row button { width: 100%; }
+}
+
+.photo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.photo-modal-content {
+    position: relative;
+    background: #fff;
+    width: min(700px, 95vw);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.photo-modal-content h3 {
+    margin: 0 40px 18px;
+    color: #222;
+}
+
+.photo-modal-content img {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+.photo-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: #333;
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.photo-modal-close:hover {
+    color: #e53935;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<section id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="brand">BEL WORKFORCE</div>
+        <h2>Employee Login</h2>
+        <p>Sign in to view your profile and attendance information.</p>
+
+        <form id="loginForm">
+            <label for="username">Employee ID / Username</label>
+            <input id="username" autocomplete="username" required>
+
+            <label for="password">Password</label>
+            <div class="password-row">
+                <input id="password" type="password"
+                       autocomplete="current-password" required>
+                <button class="eye-button" type="button"
+                        onclick="togglePassword('password', this)"
+                        aria-label="Show password">👁</button>
+            </div>
+
+            <button class="primary-button full-button" id="loginButton" type="submit">
+                Login to Employee Portal
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- DASHBOARD -->
+<div id="app" class="hidden">
+
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-brand">
+            <h2>BEL WORKFORCE</h2>
+            <p>Employee Self-Service Portal</p>
+        </div>
+
+        <div class="nav-heading">Workspace</div>
+
+        <button class="nav-button active" data-section="overview">
+            <span class="nav-icon">▦</span> Overview
+        </button>
+
+        <button class="nav-button" data-section="profile">
+            <span class="nav-icon">♙</span> My Profile
+        </button>
+
+        <div class="nav-heading">Attendance</div>
+
+        <button class="nav-button" data-section="attendance">
+            <span class="nav-icon">▣</span> My Attendance
+        </button>
+
+        <button class="nav-button" data-section="scanners">
+            <span class="nav-icon">◷</span> Check-In / Check-Out
+        </button>
+
+        <div class="nav-heading">Account</div>
+
+        <button class="nav-button" data-section="reports">
+            <span class="nav-icon">▤</span> My Reports
+        </button>
+
+        <button class="nav-button" data-section="password">
+            <span class="nav-icon">⚿</span> Change Password
+        </button>
+
+        <div class="sidebar-bottom">
+            <button class="nav-button" data-url="/">
+                <span class="nav-icon">⌂</span> Home Page
+            </button>
+
+            <button class="nav-button" id="logoutButton">
+                <span class="nav-icon">↪</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle"
+                        aria-label="Open navigation">☰</button>
+                <div>
+                    <h1 id="pageTitle">Overview</h1>
+                    <p>Employee self-service workspace</p>
+                </div>
+            </div>
+
+            <div class="user-badge">
+                <div class="avatar" id="avatar">E</div>
+                <span id="headerName">Employee</span>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <!-- OVERVIEW -->
+            <section id="section-overview" class="section-view active">
+                <div class="welcome-row">
+                    <div>
+                        <h2 id="welcomeTitle">Welcome to BEL WORKFORCE</h2>
+                        <p>View your employee information and manage your attendance.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">♙</div>
+                        <div>
+                            <p>Employee ID</p>
+                            <strong id="statEmployeeId">—</strong>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">▣</div>
+                        <div>
+                            <p>Attendance Records</p>
+                            <strong id="statAttendance">—</strong>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">✓</div>
+                        <div>
+                            <p>Account Status</p>
+                            <strong style="font-size:18px">Active</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>My Profile Summary</h3>
+                            <p>Your registered employee information.</p>
+                        </div>
+                        <button class="secondary-button" id="refreshButton">
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div id="overviewProfile" class="profile-grid">
+                        <div class="empty-state">Loading profile...</div>
+                    </div>
+
+                    <div class="button-row">
+                        <button class="primary-button" data-go="attendance">
+                            View Attendance
+                        </button>
+                        <button class="secondary-button" data-go="scanners">
+                            Open Attendance Scanners
+                        </button>
+                    </div>
+                </section>
+            </section>
+
+            <!-- PROFILE -->
+            <section id="section-profile" class="section-view">
+                <div class="welcome-row">
+                    <div>
+                        <h2>My Profile</h2>
+                        <p>View your employee details registered by the administrator.</p>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Personal Work Information</h3>
+                            <p>For corrections, contact your administrator.</p>
+                        </div>
+                    </div>
+
+                    <div id="fullProfile" class="profile-grid">
+                        <div class="empty-state">Loading profile...</div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ATTENDANCE HISTORY -->
+            <section id="section-attendance" class="section-view">
+                <div class="welcome-row">
+                    <div>
+                        <h2>My Attendance</h2>
+                        <p>Review your recorded check-in and check-out times.</p>
+                    </div>
+                    <button class="secondary-button" id="attendanceRefresh">
+                        Refresh Records
+                    </button>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Attendance History</h3>
+                            <p>Only attendance records associated with your account should be shown.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                       
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Check-In</th>
+            <th>Check-In Photo</th>
+            <th>Check-Out</th>
+            <th>Check-Out Photo</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="attendanceTable">
+        <tr>
+            <td colspan="6" class="empty-state">
+                Loading attendance history...
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+                    </div>
+                </section>
+            </section>
+
+            <!-- SCANNERS -->
+            <section id="section-scanners" class="section-view">
+                <div class="welcome-row">
+                    <div>
+                        <h2>Check-In / Check-Out</h2>
+                        <p>Use the dedicated face recognition scanners to record attendance.</p>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Attendance Scanner</h3>
+                            <p>Allow camera access when prompted and look directly at the camera.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-note">
+                        Use Check-In when you arrive at work and Check-Out when you finish.
+                        Wait for the on-screen confirmation before leaving the scanner.
+                    </div>
+
+                    <div class="button-row">
+                        <button class="primary-button" data-url="/check-in">
+                            Open Check-In Scanner
+                        </button>
+                        <button class="secondary-button" data-url="/check-out">
+                            Open Check-Out Scanner
+                        </button>
+                    </div>
+                </section>
+            </section>
+
+            <!-- REPORTS -->
+            <section id="section-reports" class="section-view">
+                <div class="welcome-row">
+                    <div>
+                        <h2>My Reports</h2>
+                        <p>View and export your own attendance history.</p>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Personal Attendance Report</h3>
+                            <p>Export records returned by your employee attendance API.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-note">
+                        This report contains only records returned for your logged-in account.
+                        If the attendance history API is unavailable, the export will not be generated.
+                    </div>
+
+                    <div class="button-row">
+                        <button class="primary-button" id="exportButton">
+                            Export My Attendance CSV
+                        </button>
+                        <button class="secondary-button" id="reportRefresh">
+                            Refresh Report
+                        </button>
+                    </div>
+                </section>
+            </section>
+
+            <!-- CHANGE PASSWORD -->
+            <section id="section-password" class="section-view">
+                <div class="welcome-row">
+                    <div>
+                        <h2>Change Password</h2>
+                        <p>Keep your employee account secure.</p>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Password Settings</h3>
+                            <p>Password changes require a secure backend endpoint.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-note">
+                        Password change is not enabled yet because the current backend
+                        needs a dedicated endpoint to verify the existing password and
+                        safely save a new password. Do not enter your password into an
+                        unconnected form.
+                    </div>
+                </section>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<div id="message" role="status" aria-live="polite"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let profileData = null;
+let attendanceData = [];
+let messageTimer;
+
+async function api(url, options = {}) {
+    const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(data.detail || "Request failed.");
+    }
+
+    return data;
+}
+
+function showMessage(text, type = "") {
+    const box = $("message");
+    box.textContent = text;
+    box.className = "show " + type;
+
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(() => {
+        box.className = "";
+    }, 5000);
+}
+
+function togglePassword(inputId, button) {
+    const input = $(inputId);
+    const showing = input.type === "password";
+    input.type = showing ? "text" : "password";
+    button.textContent = showing ? "🙈" : "👁";
+    button.setAttribute("aria-label", showing ? "Hide password" : "Show password");
+}
+
+function showApp() {
+    $("loginScreen").classList.add("hidden");
+    $("app").classList.remove("hidden");
+}
+
+function showLogin() {
+    $("app").classList.add("hidden");
+    $("loginScreen").classList.remove("hidden");
+}
+
+function navigate(sectionName) {
+    const allowed = [
+        "overview", "profile", "attendance",
+        "scanners", "reports", "password"
+    ];
+
+    if (!allowed.includes(sectionName)) return;
+
+    document.querySelectorAll(".section-view").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    $("section-" + sectionName).classList.add("active");
+
+    document.querySelectorAll(".nav-button[data-section]").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.section === sectionName
+        );
+    });
+
+    const titles = {
+        overview: "Overview",
+        profile: "My Profile",
+        attendance: "My Attendance",
+        scanners: "Check-In / Check-Out",
+        reports: "My Reports",
+        password: "Change Password"
+    };
+
+    $("pageTitle").textContent = titles[sectionName];
+
+    $("sidebar").classList.remove("open");
+    $("sidebarOverlay").classList.remove("visible");
+
+    if (sectionName === "attendance" || sectionName === "reports") {
+        loadAttendance().catch(error => showMessage(error.message, "error"));
+    }
+}
+
+document.querySelectorAll("[data-section]").forEach(button => {
+    button.addEventListener("click", () => navigate(button.dataset.section));
+});
+
+document.querySelectorAll("[data-go]").forEach(button => {
+    button.addEventListener("click", () => navigate(button.dataset.go));
+});
+
+document.querySelectorAll("[data-url]").forEach(button => {
+    button.addEventListener("click", () => {
+        window.location.href = button.dataset.url;
+    });
+});
+
+$("menuToggle").addEventListener("click", () => {
+    $("sidebar").classList.toggle("open");
+    $("sidebarOverlay").classList.toggle("visible");
+});
+
+$("sidebarOverlay").addEventListener("click", () => {
+    $("sidebar").classList.remove("open");
+    $("sidebarOverlay").classList.remove("visible");
+});
+
+function addProfileItems(containerId, fields) {
+    const container = $(containerId);
+    container.replaceChildren();
+
+    fields.forEach(([label, value]) => {
+        const item = document.createElement("div");
+        item.className = "profile-item";
+
+        const caption = document.createElement("p");
+        caption.textContent = label;
+
+        const strong = document.createElement("strong");
+        strong.textContent = value == null || value === ""
+            ? "Not available"
+            : String(value);
+
+        item.append(caption, strong);
+        container.appendChild(item);
+    });
+}
+
+async function loadProfile() {
+    const user = await api("/api/me");
+
+    if (user.role !== "employee") {
+        throw new Error("Please log in with your employee account.");
+    }
+
+    const profile = await api("/api/employee/profile");
+    profileData = profile;
+
+    const fields = [
+        ["Employee ID", profile.employee_id],
+        ["Full Name", profile.name],
+        ["Department", profile.department]
+    ];
+
+    addProfileItems("overviewProfile", fields);
+    addProfileItems("fullProfile", fields);
+
+    $("welcomeTitle").textContent =
+        "Welcome, " + (profile.name || "Employee");
+
+    $("headerName").textContent = profile.name || "Employee";
+
+    $("avatar").textContent =
+        (profile.name || "E").trim().charAt(0).toUpperCase();
+
+    $("statEmployeeId").textContent = profile.employee_id || "—";
+
+    showApp();
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value);
+
+    return date.toLocaleDateString();
+}
+
+function formatTime(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value);
+
+    return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+
+function addAttendancePhotoCell(row, photoUrl, label) {
+    const cell = document.createElement("td");
+
+    if (!photoUrl) {
+        cell.textContent = "Not available";
+        row.appendChild(cell);
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = "View Photo";
+    link.title = "View " + label;
+
+    link.addEventListener("click", function (event) {
+        event.preventDefault();
+        openPhotoModal(photoUrl, label);
+    });
+
+    cell.appendChild(link);
+    row.appendChild(cell);
+}
+
+
+async function loadAttendance() {
+    const tbody = $("attendanceTable");
+
+    try {
+        const data = await api("/api/employee/attendance");
+
+        const records = Array.isArray(data)
+            ? data
+            : Array.isArray(data.attendance)
+                ? data.attendance
+                : Array.isArray(data.records)
+                    ? data.records
+                    : null;
+
+        if (!records) {
+            throw new Error("The attendance API returned an unexpected format.");
+        }
+
+        attendanceData = records;
+        tbody.replaceChildren();
+        $("statAttendance").textContent = records.length;
+
+        if (records.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 6;
+            cell.className = "empty-state";
+            cell.textContent = "No attendance records found yet.";
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            return;
+        }
+
+        records.forEach(record => {
+            const row = document.createElement("tr");
+
+            const checkIn = record.check_in || record.checkIn || null;
+            const checkOut = record.check_out || record.checkOut || null;
+
+            // Prefer the API's date field when available.
+            const dateValue = record.date || checkIn || checkOut;
+
+            [
+                formatDate(dateValue),
+                formatTime(checkIn)
+            ].forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            addAttendancePhotoCell(
+                row,
+                record.check_in_photo,
+                "check-in photo"
+            );
+
+            const checkOutCell = document.createElement("td");
+            checkOutCell.textContent = formatTime(checkOut);
+            row.appendChild(checkOutCell);
+
+            addAttendancePhotoCell(
+                row,
+                record.check_out_photo,
+                "check-out photo"
+            );
+
+            const statusCell = document.createElement("td");
+            const badge = document.createElement("span");
+
+            badge.className = "status " +
+                (checkOut ? "success" : "pending");
+            badge.textContent = checkOut ? "Completed" : "Checked In";
+
+            statusCell.appendChild(badge);
+            row.appendChild(statusCell);
+            tbody.appendChild(row);
+        });
+
+    } catch (error) {
+        $("statAttendance").textContent = "—";
+        attendanceData = [];
+        tbody.replaceChildren();
+
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 6;
+        cell.className = "empty-state";
+        cell.textContent = error.message;
+
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        throw error;
+    }
+}
+
+async function refreshDashboard(showConfirmation = true) {
+    await loadProfile();
+
+    try {
+        await loadAttendance();
+    } catch (error) {
+        // The profile remains usable even if the history endpoint fails.
+        showMessage(
+            "Profile loaded, but attendance history could not be retrieved: " +
+            error.message,
+            "error"
+        );
+        return;
+    }
+
+    if (showConfirmation) {
+        showMessage("Dashboard refreshed.", "success");
+    }
+}
+
+async function checkSession() {
+    try {
+        await refreshDashboard(false);
+    } catch {
+        showLogin();
+    }
+}
+
+$("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = $("loginButton");
+    button.disabled = true;
+    button.textContent = "Signing in...";
+
+    try {
+        const result = await api("/api/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                username: $("username").value.trim(),
+                password: $("password").value
+            })
+        });
+
+        if (result.role !== "employee") {
+            await api("/api/logout", {method: "POST"});
+            throw new Error("This portal requires an employee account.");
+        }
+
+        $("loginForm").reset();
+        await refreshDashboard(false);
+        navigate("overview");
+        showMessage("Login successful. Welcome to BEL WORKFORCE.", "success");
+
+    } catch (error) {
+        showLogin();
+        showMessage(error.message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Login to Employee Portal";
+    }
+});
+
+$("refreshButton").addEventListener("click", async () => {
+    try {
+        await refreshDashboard();
+    } catch (error) {
+        showMessage(error.message, "error");
+    }
+});
+
+$("attendanceRefresh").addEventListener("click", async () => {
+    try {
+        await loadAttendance();
+        showMessage("Attendance records refreshed.", "success");
+    } catch (error) {
+        showMessage(error.message, "error");
+    }
+});
+
+$("reportRefresh").addEventListener("click", async () => {
+    try {
+        await loadAttendance();
+        showMessage("Attendance report refreshed.", "success");
+    } catch (error) {
+        showMessage(error.message, "error");
+    }
+});
+
+$("exportButton").addEventListener("click", async () => {
+    try {
+        await loadAttendance();
+
+        if (!attendanceData.length) {
+            showMessage("There are no attendance records to export.", "error");
+            return;
+        }
+
+        const rows = [
+            ["Date", "Check-In", "Check-Out", "Status"],
+            ...attendanceData.map(record => {
+                const checkIn = record.check_in || record.checkIn || "";
+                const checkOut = record.check_out || record.checkOut || "";
+
+                return [
+                    formatDate(checkIn || checkOut),
+                    formatTime(checkIn),
+                    formatTime(checkOut),
+                    checkOut ? "Completed" : "Checked In"
+                ];
+            })
+        ];
+
+        const csv = rows.map(row =>
+            row.map(value => {
+                let text = String(value).replace(/"/g, '""');
+
+                if (/^[=+\-@\t\r]/.test(text)) {
+                    text = "'" + text;
+                }
+
+                return '"' + text + '"';
+            }).join(",")
+        ).join("\r\n");
+
+        const blob = new Blob(["\uFEFF" + csv], {
+            type: "text/csv;charset=utf-8;"
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "BEL_WORKFORCE_My_Attendance.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+        showMessage("Your attendance report has been exported.", "success");
+
+    } catch (error) {
+        showMessage(
+            "Unable to export attendance: " + error.message,
+            "error"
+        );
+    }
+});
+
+$("logoutButton").addEventListener("click", async () => {
+    try {
+        await api("/api/logout", {method: "POST"});
+    } catch {}
+
+    showLogin();
+    showMessage("You have been logged out.", "success");
+});
+
+checkSession();
+
+
+function openPhotoModal(photoUrl, title) {
+    const modal = document.getElementById("photoModal");
+    const image = document.getElementById("photoModalImage");
+    const heading = document.getElementById("photoModalTitle");
+
+    image.src = photoUrl;
+    heading.textContent = title || "Attendance Photo";
+    modal.style.display = "flex";
+}
+
+function closePhotoModal() {
+    const modal = document.getElementById("photoModal");
+    const image = document.getElementById("photoModalImage");
+
+    modal.style.display = "none";
+    image.src = "";
+}
+
+document.getElementById("photoModal")?.addEventListener("click", function (event) {
+    if (event.target === this) {
+        closePhotoModal();
+    }
+});
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closePhotoModal();
+    }
+});
+
+</script>
+
+<!-- Attendance Photo Popup -->
+<div id="photoModal" class="photo-modal" style="display: none;">
+    <div class="photo-modal-content">
+        <button type="button" class="photo-modal-close"
+                onclick="closePhotoModal()" aria-label="Close photo">
+            &times;
+        </button>
+        <h3 id="photoModalTitle">Attendance Photo</h3>
+        <img id="photoModalImage" src="" alt="Attendance Photo">
+    </div>
+</div>
+
+</body>
+</html>
+

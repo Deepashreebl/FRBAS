@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEL WORKFORCE - Admin Signup</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f1f4f9;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 430px;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 5px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            text-align: center;
+            color: #174ea6;
+            font-size: 26px;
+        }
+
+        h2 {
+            margin: 0 0 24px;
+            text-align: center;
+            color: #333333;
+            font-size: 20px;
+        }
+
+        .subtitle {
+            margin-bottom: 24px;
+            color: #666666;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            color: #333333;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 7px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #174ea6;
+            box-shadow: 0 0 0 2px rgba(23, 78, 166, 0.12);
+        }
+
+        .password-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-container input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .eye-button {
+            flex-shrink: 0;
+            width: 45px;
+            height: 43px;
+            border: 1px solid #cccccc;
+            border-radius: 7px;
+            background: #ffffff;
+            cursor: pointer;
+            font-size: 19px;
+        }
+
+        .eye-button:hover {
+            background: #f1f4f9;
+        }
+
+        .hint {
+            display: block;
+            margin-top: 6px;
+            color: #666666;
+            font-size: 12px;
+        }
+
+        .signup-button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #174ea6;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .signup-button:hover {
+            background: #123c80;
+        }
+
+        .signup-button:disabled {
+            background: #8a9dbb;
+            cursor: not-allowed;
+        }
+
+        #message {
+            display: none;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        #message.success {
+            display: block;
+            color: #155724;
+            background: #d4edda;
+        }
+
+        #message.error {
+            display: block;
+            color: #721c24;
+            background: #f8d7da;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #174ea6;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="signup-container">
+        <h1>BEL WORKFORCE</h1>
+        <h2>Admin Sign Up</h2>
+
+        <p class="subtitle">
+            Create the administrator account to manage employee
+            registration and attendance.
+        </p>
+
+        <form id="signupForm">
+            <label for="setupKey">Setup Key</label>
+            <div class="password-container">
+                <input
+                    type="password"
+                    id="setupKey"
+                    name="setupKey"
+                    placeholder="Enter setup key"
+                    autocomplete="off"
+                    required
+                >
+                <button
+                    type="button"
+                    class="eye-button"
+                    onclick="togglePassword('setupKey', this)"
+                    aria-label="Show setup key"
+                    title="Show or hide setup key"
+                >👁️</button>
+            </div>
+
+            <label for="username">Admin Username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Choose an admin username"
+                minlength="3"
+                maxlength="80"
+                pattern="[A-Za-z0-9_.-]+"
+                title="Use letters, numbers, dots, underscores or hyphens."
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">Password</label>
+            <div class="password-container">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+                <button
+                    type="button"
+                    class="eye-button"
+                    onclick="togglePassword('password', this)"
+                    aria-label="Show password"
+                    title="Show or hide password"
+                >👁️</button>
+            </div>
+            <span class="hint">Password must contain at least 6 characters.</span>
+
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-container">
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Enter the password again"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+                <button
+                    type="button"
+                    class="eye-button"
+                    onclick="togglePassword('confirmPassword', this)"
+                    aria-label="Show confirm password"
+                    title="Show or hide password"
+                >👁️</button>
+            </div>
+
+            <button type="submit" id="signupButton" class="signup-button">
+                Create Admin Account
+            </button>
+        </form>
+
+        <div id="message" role="status" aria-live="polite"></div>
+
+        <a href="/admin" class="back-link">Back to Admin Login</a>
+    </main>
+
+    <script>
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "🙈";
+                button.setAttribute("aria-label", "Hide password");
+            } else {
+                input.type = "password";
+                button.textContent = "👁️";
+                button.setAttribute("aria-label", "Show password");
+            }
+        }
+
+        const signupForm = document.getElementById("signupForm");
+        const messageBox = document.getElementById("message");
+        const signupButton = document.getElementById("signupButton");
+
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = type;
+        }
+
+        signupForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const setupKey = document.getElementById("setupKey").value.trim();
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+            if (password.length < 6) {
+                showMessage(
+                    "Password must be at least 6 characters long.",
+                    "error"
+                );
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage("The passwords do not match.", "error");
+                return;
+            }
+
+            signupButton.disabled = true;
+            signupButton.textContent = "Creating account...";
+
+            try {
+                const response = await fetch("/api/admin/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        setup_key: setupKey,
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.detail || "Unable to create admin account."
+                    );
+                }
+
+                showMessage(
+                    "Admin account created successfully! Redirecting to admin login...",
+                    "success"
+                );
+
+                signupForm.reset();
+
+                setTimeout(function () {
+                    window.location.href = "/admin";
+                }, 1500);
+
+            } catch (error) {
+                showMessage(
+                    error.message || "Something went wrong. Please try again.",
+                    "error"
+                );
+            } finally {
+                signupButton.disabled = false;
+                signupButton.textContent = "Create Admin Account";
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BEL WORKFORCE - Admin Dashboard</title>
+<style>
+:root{--navy:#14213d;--blue:#2155cd;--light:#edf3ff;--background:#f4f6fb;--text:#172033;--muted:#778197;--border:#e6eaf1;--green:#16845b;--red:#c03945}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--background);color:var(--text)}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.6;cursor:not-allowed}
+.hidden{display:none!important}
+label{display:block;margin:15px 0 7px;font-size:13px;font-weight:700}
+input{width:100%;min-width:0;padding:12px 13px;border:1px solid #d6dce7;border-radius:8px;background:white;color:var(--text);outline:none}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2155cd15}
+.primary-button,.secondary-button,.danger-button,.eye-button{padding:10px 13px;border:0;border-radius:8px;font-weight:700}
+.primary-button{background:var(--blue);color:white}
+.primary-button:hover{background:#1945ad}
+.secondary-button{background:#e9eef8;color:#243d70}
+.danger-button{background:#fff0f0;color:#b42332}
+.full-button{width:100%;margin-top:22px}
+.password-row{display:flex;gap:7px;align-items:center}
+.password-row input{flex:1}
+.eye-button{width:45px;min-width:45px;padding:10px 5px;background:white;border:1px solid #d6dce7}
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px}
+.login-card{width:100%;max-width:430px;padding:34px;background:white;border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 40px #14213d12}
+.brand-title{color:var(--blue);font-size:27px;font-weight:800;text-align:center;letter-spacing:.4px}
+.login-card h2,.login-card>p{text-align:center}
+.login-card h2{margin:15px 0 8px}
+.login-card>p{color:var(--muted);line-height:1.5;margin-bottom:28px}
+.app{min-height:100vh}
+.sidebar{width:255px;position:fixed;inset:0 auto 0 0;z-index:20;display:flex;flex-direction:column;padding:25px 16px;background:var(--navy);color:white;overflow-y:auto}
+.sidebar-brand{padding:5px 12px 27px;border-bottom:1px solid #ffffff1c}
+.sidebar-brand h2{margin:0;color:white;font-size:21px}
+.sidebar-brand p{margin:8px 0 0;color:#bdc8dd;font-size:12px;line-height:1.5}
+.nav-heading{margin:24px 12px 10px;color:#94a3bf;font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase}
+.nav-button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;margin:3px 0;border:0;border-radius:8px;background:transparent;color:#d5deed;text-align:left;font-size:13px}
+.nav-icon{width:22px;text-align:center;font-size:17px}
+.nav-button:hover{background:#ffffff12;color:white}
+.nav-button.active{background:var(--blue);color:white}
+.sidebar-bottom{margin-top:auto;padding-top:20px}
+.sidebar-bottom .nav-button{border-top:1px solid #ffffff18;padding-top:18px}
+.main-area{min-height:100vh;margin-left:255px}
+.topbar{min-height:83px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 32px;background:white;border-bottom:1px solid var(--border)}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar h1{margin:0;font-size:21px}
+.topbar p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.admin-badge{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;font-size:12px;font-weight:700}
+.admin-avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--light);color:var(--blue);font-weight:800}
+.menu-toggle{display:none;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:white;font-size:20px}
+.content{max-width:1450px;margin:auto;padding:30px 32px 45px}
+.welcome-row{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:15px;margin-bottom:24px}
+.welcome-row h2{margin:0 0 8px;font-size:23px}
+.welcome-row p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.section-view{display:none}
+.section-view.active{display:block}
+.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:25px}
+.stat-card{display:flex;align-items:center;gap:15px;min-width:0;padding:22px;background:white;border:1px solid var(--border);border-radius:13px}
+.stat-icon{display:grid;place-items:center;width:48px;height:48px;flex-shrink:0;border-radius:12px;background:var(--light);font-size:23px}
+.stat-card:nth-child(2) .stat-icon{background:#e7f8ef}
+.stat-card:nth-child(3) .stat-icon{background:#fff3df}
+.stat-card p{margin:0 0 8px;color:var(--muted);font-size:12px}
+.stat-card strong{font-size:26px}
+.panel{margin-bottom:22px;padding:24px;background:white;border:1px solid var(--border);border-radius:13px}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.panel-heading h3{margin:0;font-size:16px}
+.panel-heading p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+.form-grid .full-width{grid-column:1/-1}
+.file-note{display:block;margin-top:7px;color:var(--muted);font-size:12px;line-height:1.5}
+#preview{display:block;max-width:180px;max-height:180px;margin-top:14px;border:1px solid var(--border);border-radius:10px;object-fit:cover}
+.button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+#credentials{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;padding:15px;background:#f7f9fd;border:1px dashed #cbd5e5;border-radius:8px;font-size:13px}
+.table-wrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}
+th,td{padding:14px 12px;border-bottom:1px solid var(--border);text-align:left}
+th{background:#f7f9fd;color:#59667c;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+tbody tr:hover{background:#fafbfe}
+.status{display:inline-block;padding:6px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.status.success{color:var(--green);background:#e7f8ef}
+.status.pending{color:#946200;background:#fff3d8}
+.empty-state{padding:28px 12px;color:var(--muted);text-align:center;font-size:13px}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.info-box{padding:17px;border:1px solid var(--border);border-radius:10px}
+.info-box p{margin:0 0 8px;color:var(--muted);font-size:12px}
+.info-box strong{font-size:14px}
+#message{position:fixed;right:22px;bottom:22px;z-index:150;display:none;max-width:min(420px,calc(100vw - 44px));padding:14px 18px;border-radius:10px;background:#172033;color:white;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 8px 25px #0002}
+#message.show{display:block}
+#message.error{background:#a52836}
+#message.success{background:#176b4a}
+.sidebar-overlay{display:none}
+.action-buttons{display:flex;gap:7px;align-items:center}
+.action-buttons button{padding:8px 10px;font-size:12px}
+.modal-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:#0f172aa6;overflow-y:auto}
+.modal-overlay.hidden{display:none!important}
+.edit-modal{width:100%;max-width:560px;max-height:90vh;overflow-y:auto;padding:26px;background:white;border-radius:15px;box-shadow:0 20px 60px #0003}
+.edit-modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:20px}
+.edit-modal-header h2{margin:0;font-size:21px}
+.edit-modal-header p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.modal-close{flex-shrink:0;width:36px;height:36px;border:0;border-radius:8px;background:#edf1f7;color:var(--text);font-size:22px}
+.edit-modal-footer{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:24px}
+.edit-modal-footer button{min-width:110px}
+@media(max-width:1000px){.sidebar{width:235px}.main-area{margin-left:235px}.content{padding:25px 20px}.stats-grid{gap:12px}.stat-card{padding:16px}}
+@media(max-width:760px){.sidebar{width:255px;transform:translateX(-100%);transition:transform .22s ease}.sidebar.open{transform:translateX(0)}.main-area{margin-left:0}.menu-toggle{display:inline-block}.sidebar-overlay.visible{display:block;position:fixed;inset:0;z-index:15;background:#10182770}.topbar{padding:15px 18px}.topbar h1{font-size:18px}.admin-badge span:last-child{display:none}.content{padding:22px 15px 35px}.stats-grid,.form-grid,.info-grid{grid-template-columns:1fr}.stat-card{padding:17px}.panel{padding:18px}.form-grid .full-width{grid-column:auto}}
+@media(max-width:560px){.edit-modal{padding:20px}.edit-modal .form-grid{grid-template-columns:1fr}.edit-modal .form-grid .full-width{grid-column:auto}.edit-modal-footer button{flex:1}}
+@media(max-width:420px){.login-card{padding:24px 19px}.topbar{gap:8px}.admin-badge{padding:6px}.welcome-row h2{font-size:20px}.button-row button{width:100%}}
+
+
+.photo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.photo-modal-content {
+    position: relative;
+    background: #fff;
+    width: min(700px, 95vw);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.photo-modal-content h3 {
+    margin: 0 40px 18px;
+    color: #222;
+}
+
+.photo-modal-content img {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+.photo-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: #333;
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.photo-modal-close:hover {
+    color: #e53935;
+}
+
+
+
+</style>
+</head>
+<body>
+<section id="loginScreen" class="login-screen">
+<div class="login-card">
+<div class="brand-title">BEL WORKFORCE</div>
+<h2>Administrator Login</h2>
+<p>Sign in to manage employees, face enrollment and attendance.</p>
+<form id="loginForm">
+<label for="username">Admin Username</label>
+<input id="username" autocomplete="username" required>
+<label for="password">Password</label>
+<div class="password-row"><input id="password" type="password" autocomplete="current-password" required><button class="eye-button" type="button" onclick="togglePassword('password',this)">👁</button></div>
+<button class="primary-button full-button" type="submit" id="loginButton">Login to Dashboard</button>
+</form>
+</div>
+</section>
+
+<div id="app" class="app hidden">
+<aside id="sidebar" class="sidebar">
+<div class="sidebar-brand"><h2>BEL WORKFORCE</h2><p>Face Recognition Attendance System</p></div>
+<div class="nav-heading">Main Menu</div>
+<button class="nav-button active" data-section="overview"><span class="nav-icon">▦</span>Overview</button>
+<button class="nav-button" data-section="employees"><span class="nav-icon">♙</span>Employee Management</button>
+<button class="nav-button" data-section="register"><span class="nav-icon">＋</span>Register Employee</button>
+<button class="nav-button" data-section="face"><span class="nav-icon">◎</span>Face Registration</button>
+<div class="nav-heading">Attendance</div>
+<button class="nav-button" data-section="attendance"><span class="nav-icon">▣</span>Attendance Records</button>
+<button class="nav-button" data-section="reports"><span class="nav-icon">▤</span>Reports</button>
+<div class="sidebar-bottom">
+<button class="nav-button" data-section="settings"><span class="nav-icon">⚙</span>Settings & Links</button>
+<button class="nav-button" id="sidebarLogout"><span class="nav-icon">↪</span>Logout</button>
+</div>
+</aside>
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+<div class="main-area">
+<header class="topbar">
+<div class="topbar-left"><button class="menu-toggle" id="menuToggle">☰</button><div><h1 id="pageTitle">Overview</h1><p>Administrator workspace</p></div></div>
+<div class="admin-badge"><div class="admin-avatar">A</div><span>Administrator</span></div>
+</header>
+<main class="content">
+
+<section id="section-overview" class="section-view active">
+<div class="welcome-row"><div><h2>Welcome to BEL WORKFORCE</h2><p>Manage employee accounts, face enrollment and attendance from one place.</p></div><button class="primary-button" data-go="register">+ Register Employee</button></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon">♙</div><div><p>Total Employees</p><strong id="totalEmployees">—</strong></div></div>
+<div class="stat-card"><div class="stat-icon">✓</div><div><p>Faces Enrolled</p><strong id="enrolledEmployees">—</strong></div></div>
+<div class="stat-card"><div class="stat-icon">◷</div><div><p>Pending Enrollment</p><strong id="pendingEmployees">—</strong></div></div>
+</div>
+<section class="panel"><div class="panel-heading"><div><h3>Employee Summary</h3><p>Current registration and face enrollment status.</p></div><button class="secondary-button" id="overviewRefresh">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Employee ID</th><th>Employee Name</th><th>Department</th><th>Face Status</th></tr></thead><tbody id="overviewTable"></tbody></table></div></section>
+<section class="panel"><div class="panel-heading"><div><h3>Quick Actions</h3><p>Open frequently used attendance functions.</p></div></div><div class="button-row"><button class="primary-button" data-go="register">Register Employee</button><button class="secondary-button" data-go="face">Enroll Face Photo</button><button class="secondary-button" data-url="/check-in">Open Check-In Scanner</button><button class="secondary-button" data-url="/check-out">Open Check-Out Scanner</button></div></section>
+</section>
+
+<section id="section-employees" class="section-view">
+<div class="welcome-row"><div><h2>Employee Management</h2><p>Add, view, edit or permanently delete employee accounts.</p></div><button class="primary-button" data-go="register">+ Add Employee</button></div>
+<section class="panel"><div class="panel-heading"><div><h3>Registered Employees</h3><p>Manage employee information and face enrollment.</p></div><button class="secondary-button" id="refreshButton">Refresh List</button></div><div class="table-wrap"><table><thead><tr><th>Employee ID</th><th>Full Name</th><th>Department</th><th>Face Enrollment</th><th>Actions</th></tr></thead><tbody id="employeeTable"></tbody></table></div></section>
+</section>
+
+<section id="section-register" class="section-view">
+<div class="welcome-row"><div><h2>Register Employee</h2><p>Create an employee account and set a permanent login password.</p></div></div>
+<section class="panel"><div class="panel-heading"><div><h3>Employee Details</h3><p>Complete all fields before submitting.</p></div></div>
+<form id="employeeForm"><div class="form-grid">
+<div><label for="employeeId">Employee ID</label><input id="employeeId" maxlength="50" pattern="[A-Za-z0-9_-]+" required></div>
+<div><label for="employeeName">Full Name</label><input id="employeeName" maxlength="120" required></div>
+<div class="full-width"><label for="department">Department</label><input id="department" maxlength="100" required></div>
+<div class="full-width"><label for="employeePassword">Permanent Password</label><div class="password-row"><input id="employeePassword" type="password" minlength="6" autocomplete="new-password" required><button class="eye-button" type="button" onclick="togglePassword('employeePassword',this)">👁</button></div><span class="file-note">The employee will use this password to log in.</span></div>
+</div><div class="button-row"><button id="addButton" class="primary-button" type="submit">Register Employee</button><button class="secondary-button" type="reset">Clear Form</button></div></form>
+</section>
+<section class="panel"><div class="panel-heading"><div><h3>Registration Details</h3><p>The password is not displayed here.</p></div></div><p id="credentials">No employee registered in this session yet.</p><div class="button-row"><button id="copyButton" class="secondary-button hidden" type="button">Copy Employee Login Details</button></div></section>
+</section>
+
+<section id="section-face" class="section-view">
+<div class="welcome-row"><div><h2>Face Registration</h2><p>Enroll a clear employee photo for face recognition attendance.</p></div></div>
+<section class="panel">
+<div class="panel-heading"><div><h3>Upload Employee Face Photo</h3><p>Register the employee account first if it does not exist.</p></div></div>
+<form id="faceForm">
+<label for="faceEmployeeId">Employee ID</label><input id="faceEmployeeId" maxlength="50" required>
+<label for="employeePhoto">Employee Photo (JPG/PNG, maximum 5 MB)</label><input id="employeePhoto" type="file" accept="image/jpeg,image/png" required>
+<span class="file-note">Use a clear, front-facing photo containing exactly one visible face.</span>
+<img id="preview" class="hidden" alt="Employee photo preview">
+<div class="button-row"><button id="faceButton" class="primary-button" type="submit">Enroll Face Photo</button><button class="secondary-button" id="clearFaceButton" type="button">Clear</button></div>
+</form>
+</section>
+<section class="panel"><div class="panel-heading"><div><h3>Enrollment Status</h3><p>Use the employee list to check whether a photo is enrolled.</p></div><button class="secondary-button" data-go="employees">View Employees</button></div></section>
+</section>
+
+
+
+
+<section id="section-attendance" class="section-view">
+<div class="welcome-row">
+    <div>
+        <h2>Attendance Records</h2>
+        <p>View employee check-in and check-out times and captured photos.</p>
+    </div>
+    <button class="secondary-button" id="attendanceRefresh">Refresh Records</button>
+</div>
+
+<section class="panel">
+    <div class="panel-heading">
+        <div>
+            <h3>Attendance Scanners</h3>
+            <p>Open the face recognition scanner pages.</p>
+        </div>
+    </div>
+    <div class="button-row">
+        <button class="primary-button" data-url="/check-in">Open Check-In Scanner</button>
+        <button class="secondary-button" data-url="/check-out">Open Check-Out Scanner</button>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-heading">
+        <div>
+            <h3>Employee Attendance History</h3>
+            <p>Click a photo link to view the saved attendance image.</p>
+        </div>
+        <strong id="attendanceTotal">Total Records: 0</strong>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Date</th>
+                    <th>Check-In</th>
+                    <th>Check-In Photo</th>
+                    <th>Check-Out</th>
+                    <th>Check-Out Photo</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTable">
+                <tr><td colspan="9" class="empty-state">Loading attendance records...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</section>
+
+<section id="section-reports" class="section-view">
+<div class="welcome-row"><div><h2>Reports</h2><p>Employee registration and face enrollment summary.</p></div></div>
+<section class="panel"><div class="panel-heading"><div><h3>Employee Enrollment Report</h3><p>Download a CSV file of the employee list.</p></div></div><div class="info-grid"><div class="info-box"><p>Total Employees</p><strong id="reportTotal">—</strong></div><div class="info-box"><p>Faces Enrolled</p><strong id="reportEnrolled">—</strong></div></div><div class="button-row"><button class="primary-button" id="exportButton">Export Employee CSV</button><button class="secondary-button" id="reportRefresh">Refresh Report</button></div></section>
+</section>
+
+<section id="section-settings" class="section-view">
+<div class="welcome-row"><div><h2>Settings & Links</h2><p>Quick access to other BEL WORKFORCE pages.</p></div></div>
+<section class="panel"><div class="panel-heading"><div><h3>System Navigation</h3><p>Open each page in the same browser.</p></div></div><div class="button-row"><button class="secondary-button" data-url="/">Home Page</button><button class="secondary-button" data-url="/employee">Employee Portal</button><button class="primary-button" data-url="/check-in">Check-In Scanner</button><button class="primary-button" data-url="/check-out">Check-Out Scanner</button></div></section>
+<section class="panel"><div class="panel-heading"><div><h3>Current Dashboard</h3><p>Signed in with an administrator account.</p></div></div><button class="danger-button" id="settingsLogout">Logout</button></section>
+</section>
+
+</main>
+</div>
+</div>
+
+<div id="editModal" class="modal-overlay hidden">
+<section class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+<div class="edit-modal-header"><div><h2 id="editModalTitle">Edit Employee Details</h2><p>Update employee information and save changes.</p></div><button type="button" id="closeEditModal" class="modal-close">×</button></div>
+<form id="editEmployeeForm"><div class="form-grid">
+<div><label for="editEmployeeId">Employee ID</label><input id="editEmployeeId" maxlength="50" pattern="[A-Za-z0-9_-]+" required></div>
+<div><label for="editEmployeeName">Full Name</label><input id="editEmployeeName" maxlength="120" required></div>
+<div class="full-width"><label for="editDepartment">Department</label><input id="editDepartment" maxlength="100" required></div>
+<div class="full-width"><label for="editEmployeePassword">New Employee Password</label><div class="password-row"><input id="editEmployeePassword" type="password" minlength="6" placeholder="Leave blank to keep current password"><button class="eye-button" type="button" onclick="togglePassword('editEmployeePassword',this)">👁</button></div><span class="file-note">Optional. Enter at least 6 characters to change the password.</span></div>
+</div><div class="edit-modal-footer"><button type="button" id="cancelEditButton" class="secondary-button">Cancel</button><button type="submit" id="saveEditButton" class="primary-button">Save Changes</button></div></form>
+</section>
+</div>
+<div id="message" role="status" aria-live="polite"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let credentialsText = "";
+let employeeCache = [];
+let messageTimer;
+let employeeBeingEdited = null;
+
+async function api(url, options = {}) {
+    const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(
+            data.detail || data.message || `Request failed (${response.status}).`
+        );
+    }
+    return data;
+}
+
+function showMessage(text, type = "") {
+    const box = $("message");
+    box.textContent = text;
+    box.className = "show " + type;
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(() => box.className = "", 5000);
+}
+
+function togglePassword(id, button) {
+    const input = $(id);
+    input.type = input.type === "password" ? "text" : "password";
+    button.textContent = input.type === "password" ? "👁" : "🙈";
+}
+
+function showApp() {
+    $("loginScreen").classList.add("hidden");
+    $("app").classList.remove("hidden");
+}
+
+function showLogin() {
+    $("app").classList.add("hidden");
+    $("loginScreen").classList.remove("hidden");
+}
+
+function navigate(name) {
+    const titles = {
+        overview:"Overview", employees:"Employee Management",
+        register:"Register Employee", face:"Face Registration",
+        attendance:"Attendance Records", reports:"Reports",
+        settings:"Settings & Links"
+    };
+    if (!Object.prototype.hasOwnProperty.call(titles, name)) return;
+    document.querySelectorAll(".section-view").forEach(s => s.classList.remove("active"));
+    $("section-" + name).classList.add("active");
+    document.querySelectorAll(".nav-button[data-section]").forEach(b =>
+        b.classList.toggle("active", b.dataset.section === name)
+    );
+    $("pageTitle").textContent = titles[name];
+    $("sidebar").classList.remove("open");
+    $("sidebarOverlay").classList.remove("visible");
+    if (["employees","overview","reports"].includes(name)) {
+        loadEmployees().catch(e => showMessage(e.message, "error"));
+    }
+    if (name === "attendance") {
+     loadAttendance();
+    }
+}
+
+document.querySelectorAll(".nav-button[data-section]").forEach(b =>
+    b.addEventListener("click", () => navigate(b.dataset.section))
+);
+document.querySelectorAll("[data-go]").forEach(b =>
+    b.addEventListener("click", () => navigate(b.dataset.go))
+);
+document.querySelectorAll("[data-url]").forEach(b =>
+    b.addEventListener("click", () => window.location.href = b.dataset.url)
+);
+$("menuToggle").addEventListener("click", () => {
+    $("sidebar").classList.toggle("open");
+    $("sidebarOverlay").classList.toggle("visible");
+});
+$("sidebarOverlay").addEventListener("click", () => {
+    $("sidebar").classList.remove("open");
+    $("sidebarOverlay").classList.remove("visible");
+});
+
+function statusBadge(enrolled) {
+    const span = document.createElement("span");
+    span.className = "status " + (enrolled ? "success" : "pending");
+    span.textContent = enrolled ? "Enrolled" : "Pending";
+    return span;
+}
+
+function addEmployeeRow(tbody, employee) {
+    const row = document.createElement("tr");
+    [employee.employee_id ?? "", employee.name ?? "", employee.department ?? ""].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = String(value);
+        row.appendChild(cell);
+    });
+    const status = document.createElement("td");
+    status.appendChild(statusBadge(Boolean(employee.photo_enrolled)));
+    row.appendChild(status);
+
+    if (tbody.id === "employeeTable") {
+        const cell = document.createElement("td");
+        const actions = document.createElement("div");
+        actions.className = "action-buttons";
+        const edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "secondary-button";
+        edit.textContent = "Edit";
+        edit.addEventListener("click", () => openEditModal(employee));
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "danger-button";
+        del.textContent = "Delete";
+        del.addEventListener("click", () => deleteEmployee(employee));
+        actions.append(edit, del);
+        cell.appendChild(actions);
+        row.appendChild(cell);
+    }
+    tbody.appendChild(row);
+}
+
+function renderEmployeeTable(id, employees) {
+    const tbody = $(id);
+    tbody.replaceChildren();
+    if (!employees.length) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = id === "employeeTable" ? 5 : 4;
+        cell.className = "empty-state";
+        cell.textContent = "No employees registered.";
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        return;
+    }
+    employees.forEach(e => addEmployeeRow(tbody, e));
+}
+
+function openEditModal(employee) {
+    employeeBeingEdited = employee;
+    $("editEmployeeId").value = employee.employee_id || "";
+    $("editEmployeeName").value = employee.name || "";
+    $("editDepartment").value = employee.department || "";
+    $("editEmployeePassword").value = "";
+    $("editModal").classList.remove("hidden");
+}
+function closeEditModal() {
+    $("editModal").classList.add("hidden");
+    $("editEmployeeForm").reset();
+    employeeBeingEdited = null;
+    $("editEmployeePassword").type = "password";
+}
+$("closeEditModal").addEventListener("click", closeEditModal);
+$("cancelEditButton").addEventListener("click", closeEditModal);
+$("editModal").addEventListener("click", e => {
+    if (e.target === $("editModal")) closeEditModal();
+});
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !$("editModal").classList.contains("hidden")) closeEditModal();
+});
+
+$("editEmployeeForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!employeeBeingEdited) return;
+    const oldId = employeeBeingEdited.employee_id;
+    const employee_id = $("editEmployeeId").value.trim();
+    const name = $("editEmployeeName").value.trim();
+    const department = $("editDepartment").value.trim();
+    const password = $("editEmployeePassword").value;
+    const button = $("saveEditButton");
+    if (!/^[A-Za-z0-9_-]{1,50}$/.test(employee_id)) {
+        showMessage("Invalid Employee ID.", "error"); return;
+    }
+    if (!name || !department) {
+        showMessage("Name and department are required.", "error"); return;
+    }
+    if (password && password.length < 6) {
+        showMessage("Password must contain at least 6 characters.", "error"); return;
+    }
+    button.disabled = true;
+    button.textContent = "Saving...";
+    try {
+        const result = await api("/api/employees/" + encodeURIComponent(oldId), {
+            method:"PUT",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({employee_id,name,department,password})
+        });
+        closeEditModal();
+        await loadEmployees();
+        showMessage(result.message || "Employee updated successfully.", "success");
+    } catch (error) {
+        showMessage("Could not update employee: " + error.message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Save Changes";
+    }
+});
+
+async function deleteEmployee(employee) {
+    if (!confirm("Permanently delete employee " + employee.employee_id + " (" + employee.name + ")? This cannot be undone.")) return;
+    try {
+        await api("/api/employees/" + encodeURIComponent(employee.employee_id), {method:"DELETE"});
+        await loadEmployees();
+        showMessage("Employee deleted successfully.", "success");
+    } catch (e) {
+        showMessage("Employee deletion failed: " + e.message, "error");
+    }
+}
+
+async function loadEmployees() {
+    const data = await api("/api/employees");
+    employeeCache = Array.isArray(data) ? data : [];
+    renderEmployeeTable("employeeTable", employeeCache);
+    renderEmployeeTable("overviewTable", employeeCache);
+    const total = employeeCache.length;
+    const enrolled = employeeCache.filter(e => e.photo_enrolled).length;
+    $("totalEmployees").textContent = total;
+    $("enrolledEmployees").textContent = enrolled;
+    $("pendingEmployees").textContent = total - enrolled;
+    $("reportTotal").textContent = total;
+    $("reportEnrolled").textContent = enrolled;
+}
+
+
+function attendancePhotoCell(photoUrl, label) {
+    const cell = document.createElement("td");
+
+    if (!photoUrl) {
+        cell.textContent = "Not available";
+        return cell;
+    }
+
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = "View Photo";
+    link.title = "View " + label;
+
+    link.addEventListener("click", function (event) {
+        event.preventDefault();
+        openPhotoModal(photoUrl, label);
+    });
+
+    cell.appendChild(link);
+    return cell;
+}
+
+
+async function loadAttendance() {
+    const tbody = $("attendanceTable");
+    tbody.replaceChildren();
+
+    const loadingRow = document.createElement("tr");
+    const loadingCell = document.createElement("td");
+    loadingCell.colSpan = 9;
+    loadingCell.className = "empty-state";
+    loadingCell.textContent = "Loading attendance records...";
+    loadingRow.appendChild(loadingCell);
+    tbody.appendChild(loadingRow);
+
+    try {
+        const data = await api("/api/admin/attendance");
+        const records = Array.isArray(data.attendance) ? data.attendance : [];
+
+        $("attendanceTotal").textContent =
+            "Total Records: " + records.length;
+
+        tbody.replaceChildren();
+
+        if (records.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 9;
+            cell.className = "empty-state";
+            cell.textContent = "No attendance records found.";
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            return;
+        }
+
+        records.forEach(record => {
+            const row = document.createElement("tr");
+
+            [
+                record.employee_id,
+                record.employee_name,
+                record.department,
+                record.date,
+                record.check_in,
+            ].forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value || "—";
+                row.appendChild(cell);
+            });
+
+            row.appendChild(
+                attendancePhotoCell(record.check_in_photo, "check-in photo")
+            );
+
+            const checkOutCell = document.createElement("td");
+            checkOutCell.textContent = record.check_out || "Not checked out";
+            row.appendChild(checkOutCell);
+
+            row.appendChild(
+                attendancePhotoCell(record.check_out_photo, "check-out photo")
+            );
+
+            const statusCell = document.createElement("td");
+            const badge = document.createElement("span");
+            badge.className = "status " +
+                (record.check_out ? "success" : "pending");
+            badge.textContent = record.status || "Present";
+            statusCell.appendChild(badge);
+            row.appendChild(statusCell);
+
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        tbody.replaceChildren();
+
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 9;
+        cell.className = "empty-state";
+        cell.textContent = "Could not load attendance: " + error.message;
+        row.appendChild(cell);
+        tbody.appendChild(row);
+
+        showMessage("Attendance loading failed: " + error.message, "error");
+    }
+}
+
+$("attendanceRefresh").addEventListener("click", () => {
+    loadAttendance();
+});
+
+async function checkSession() {
+    try {
+        const user = await api("/api/me");
+        if (user.role !== "admin") return showLogin();
+        showApp();
+        await loadEmployees();
+    } catch {
+        showLogin();
+    }
+}
+
+$("loginForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const button = $("loginButton");
+    button.disabled = true;
+    button.textContent = "Signing in...";
+    try {
+        const result = await api("/api/login", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                username:$("username").value.trim(),
+                password:$("password").value
+            })
+        });
+        if (result.role !== "admin") {
+            await api("/api/logout", {method:"POST"});
+            throw new Error("Administrator account required.");
+        }
+        $("loginForm").reset();
+        showApp();
+        navigate("overview");
+        await loadEmployees();
+        showMessage("Admin login successful.", "success");
+    } catch (error) {
+        showMessage(error.message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Login to Dashboard";
+    }
+});
+
+$("employeeForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const button = $("addButton");
+    const id = $("employeeId").value.trim();
+    const password = $("employeePassword").value;
+    if (password.length < 6) {
+        showMessage("Password must contain at least 6 characters.", "error"); return;
+    }
+    button.disabled = true;
+    button.textContent = "Creating employee account...";
+    try {
+        const account = await api("/api/employees", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                employee_id:id,
+                name:$("employeeName").value.trim(),
+                department:$("department").value.trim(),
+                password
+            })
+        });
+        credentialsText = "Employee ID: " + (account.employee_id || id) +
+            "\nUsername: " + (account.username || account.employee_id || id) +
+            "\nPermanent password: Set by administrator. Not displayed for security.";
+        $("credentials").textContent = credentialsText;
+        $("copyButton").classList.remove("hidden");
+        $("employeeForm").reset();
+        await loadEmployees();
+        $("faceEmployeeId").value = id;
+        navigate("face");
+        showMessage("Employee account created. Now enroll their face photo.", "success");
+    } catch (error) {
+        showMessage(error.message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Register Employee";
+    }
+});
+
+$("employeePhoto").addEventListener("change", () => {
+    const file = $("employeePhoto").files[0];
+    const preview = $("preview");
+    if (preview.src.startsWith("blob:")) URL.revokeObjectURL(preview.src);
+    preview.classList.add("hidden");
+    preview.removeAttribute("src");
+    if (!file) return;
+    if (!["image/jpeg","image/png"].includes(file.type) || file.size > 5 * 1024 * 1024) {
+        $("employeePhoto").value = "";
+        showMessage("Choose a JPG or PNG image smaller than 5 MB.", "error");
+        return;
+    }
+    preview.src = URL.createObjectURL(file);
+    preview.classList.remove("hidden");
+});
+
+/* FIXED FACE ENROLLMENT HANDLER */
+$("faceForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const button = $("faceButton");
+    const id = $("faceEmployeeId").value.trim();
+    const photo = $("employeePhoto").files[0];
+
+    if (!id) {
+        showMessage("Please enter the Employee ID.", "error");
+        $("faceEmployeeId").focus();
+        return;
+    }
+    if (!photo) {
+        showMessage("Please select an employee face photo.", "error");
+        $("employeePhoto").focus();
+        return;
+    }
+    if (!["image/jpeg","image/png"].includes(photo.type)) {
+        showMessage("Only JPG and PNG photos are allowed.", "error");
+        return;
+    }
+    if (photo.size > 5 * 1024 * 1024) {
+        showMessage("The photo must be smaller than 5 MB.", "error");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Enrolling face...";
+
+    try {
+        const formData = new FormData();
+        formData.append("photo", photo);
+
+        const result = await api(
+            "/api/employees/" + encodeURIComponent(id) + "/face",
+            {method:"POST", body:formData}
+        );
+
+        showMessage(
+            result.message || "Employee face photo enrolled successfully.",
+            "success"
+        );
+
+        $("faceForm").reset();
+        const preview = $("preview");
+        if (preview.src.startsWith("blob:")) URL.revokeObjectURL(preview.src);
+        preview.classList.add("hidden");
+        preview.removeAttribute("src");
+
+        await loadEmployees();
+        navigate("employees");
+    } catch (error) {
+        showMessage("Face enrollment failed: " + error.message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Enroll Face Photo";
+    }
+});
+
+$("clearFaceButton").addEventListener("click", () => {
+    $("faceForm").reset();
+    const preview = $("preview");
+    if (preview.src.startsWith("blob:")) URL.revokeObjectURL(preview.src);
+    preview.classList.add("hidden");
+    preview.removeAttribute("src");
+});
+
+$("copyButton").addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(credentialsText);
+        showMessage("Employee login details copied. Password is not included.", "success");
+    } catch {
+        showMessage("Copy unavailable. Please copy the details manually.", "error");
+    }
+});
+
+async function refreshEmployees(message) {
+    try {
+        await loadEmployees();
+        showMessage(message, "success");
+    } catch (e) {
+        showMessage(e.message, "error");
+    }
+}
+$("refreshButton").addEventListener("click", () => refreshEmployees("Employee list refreshed."));
+$("overviewRefresh").addEventListener("click", () => refreshEmployees("Dashboard refreshed."));
+$("reportRefresh").addEventListener("click", () => refreshEmployees("Report refreshed."));
+
+$("exportButton").addEventListener("click", async () => {
+    try {
+        await loadEmployees();
+        const rows = [
+            ["Employee ID","Name","Department","Face Enrollment"],
+            ...employeeCache.map(e => [
+                e.employee_id ?? "",e.name ?? "",e.department ?? "",
+                e.photo_enrolled ? "Enrolled" : "Pending"
+            ])
+        ];
+        const csv = rows.map(row => row.map(value => {
+            let text = String(value).replace(/"/g, '""');
+            if (/^[=+\-@\t\r]/.test(text)) text = "'" + text;
+            return '"' + text + '"';
+        }).join(",")).join("\r\n");
+        const blob = new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8;"});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "BEL_WORKFORCE_Employee_Report.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showMessage("Employee CSV report exported.", "success");
+    } catch (e) {
+        showMessage(e.message, "error");
+    }
+});
+
+async function logout() {
+    try { await api("/api/logout", {method:"POST"}); } catch {}
+    showLogin();
+    showMessage("Logged out successfully.", "success");
+}
+$("sidebarLogout").addEventListener("click", logout);
+$("settingsLogout").addEventListener("click", logout);
+
+checkSession();
+
+
+
+function openPhotoModal(photoUrl, title) {
+    const modal = document.getElementById("photoModal");
+    const image = document.getElementById("photoModalImage");
+    const heading = document.getElementById("photoModalTitle");
+
+    image.src = photoUrl;
+    heading.textContent = title || "Attendance Photo";
+    modal.style.display = "flex";
+}
+
+function closePhotoModal() {
+    const modal = document.getElementById("photoModal");
+    const image = document.getElementById("photoModalImage");
+
+    modal.style.display = "none";
+    image.src = "";
+}
+
+document.getElementById("photoModal")?.addEventListener("click", function (event) {
+    if (event.target === this) {
+        closePhotoModal();
+    }
+});
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closePhotoModal();
+    }
+});
+
+</script>
+
+
+<!-- Attendance Photo Popup -->
+<div id="photoModal" class="photo-modal" style="display: none;">
+    <div class="photo-modal-content">
+        <button type="button" class="photo-modal-close"
+                onclick="closePhotoModal()" aria-label="Close photo">
+            &times;
+        </button>
+        <h3 id="photoModalTitle">Attendance Photo</h3>
+        <img id="photoModalImage" src="" alt="Attendance Photo">
+    </div>
+</div>
+
+</body>
+</html>
