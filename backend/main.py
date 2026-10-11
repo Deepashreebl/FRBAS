@@ -2088,6 +2088,10 @@ def get_attendance_photo(
         record = query.first()
 
         if not record:
+            print(
+                f"PHOTO DEBUG | Database record not found "
+                f"| object_key={object_key}"
+            )
             raise HTTPException(
                 404,
                 "Photo is not linked to an accessible attendance record.",
@@ -2095,7 +2099,15 @@ def get_attendance_photo(
 
     try:
         image_bytes = download_image(object_key)
-    except Exception:
+
+        if not image_bytes:
+            raise ValueError("Storage returned an empty image.")
+
+    except Exception as exc:
+        print(
+            f"PHOTO STORAGE ERROR | object_key={object_key} "
+            f"| {type(exc).__name__}: {exc}"
+        )
         raise HTTPException(
             404,
             "Attendance photo could not be retrieved from storage.",
@@ -2106,6 +2118,7 @@ def get_attendance_photo(
         media_type="image/jpeg",
         headers={"Cache-Control": "private, no-store"},
     )
+
 
 
 
