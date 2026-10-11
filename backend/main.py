@@ -1,4 +1,4 @@
-import os
+﻿import os
 
 import re
 
@@ -14,7 +14,10 @@ import cv2
 
 import numpy as np
 
+from dotenv import load_dotenv
 
+ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(ROOT / ".env")
 
 from fastapi import (
 
@@ -34,7 +37,7 @@ from fastapi import (
 
 )
 
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 from fastapi.staticfiles import StaticFiles
 
@@ -61,6 +64,8 @@ from backend.db import (
     Attendance,
 
 )
+
+from backend.storage import upload_image, download_image
 
 
 
@@ -1362,19 +1367,26 @@ async def enroll_face(
 
 
 
-        path = FACES / f"{employee.id}.jpg"
+        success, encoded = cv2.imencode(".jpg", face)
 
+        if not success:
+           raise HTTPException(500, "Could not encode employee photo.")
 
+        object_key = f"faces/{employee.id}.jpg"
 
-        if not cv2.imwrite(str(path), face):
+        try:
+           upload_image(object_key, encoded.tobytes())
+        except Exception:
+            raise HTTPException(
+              500,
+              "Could not upload employee photo to storage.",
+            )
 
-            raise HTTPException(500, "Could not save photo.")
-
-
-
-        employee.face_data = str(path)
-
+        employee.face_data = object_key
         db.commit()
+
+
+
 
 
 
@@ -1533,29 +1545,36 @@ async def scan_employee(
 
 
 
-            saved_path = Path(employee.face_data)
+            try:
+              if employee.face_data.startswith("faces/"):
+                image_bytes = download_image(employee.face_data)
 
+                enrolled_face = cv2.imdecode(
+                  np.frombuffer(image_bytes, dtype=np.uint8),
+                  cv2.IMREAD_GRAYSCALE,
+                )
+              else:
+                 # Support existing local image paths where available.
+                 saved_path = Path(employee.face_data)
 
+                 if not saved_path.is_file():
+                   continue
 
-            if not saved_path.exists():
+                 enrolled_face = cv2.imread(
+                   str(saved_path),
+                    cv2.IMREAD_GRAYSCALE,
+                )
 
+            except Exception as exc:
+                print(
+                   f"FACE STORAGE ERROR | employee={employee.employee_id} "
+                   f"| {type(exc).__name__}: {exc}"
+                )
                 continue
-
-
-
-            enrolled_face = cv2.imread(
-
-                str(saved_path),
-
-                cv2.IMREAD_GRAYSCALE,
-
-            )
-
-
 
             if enrolled_face is None:
-
                 continue
+
 
 
 
@@ -1731,40 +1750,33 @@ async def scan_employee(
 
 
 
-            photo_path = ATTENDANCE_PHOTOS / photo_name
-
-
-
             color_frame = cv2.imdecode(
-
-                np.frombuffer(raw, dtype=np.uint8),
-
-                cv2.IMREAD_COLOR,
-
+              np.frombuffer(raw, dtype=np.uint8),
+              cv2.IMREAD_COLOR,
             )
 
-
-
             if color_frame is None:
+               raise HTTPException(
+                 400,
+                 "Could not decode the attendance photo.",
+               )
 
-                raise HTTPException(
+            success, encoded = cv2.imencode(".jpg", color_frame)
 
-                    400,
-
-                    "Could not decode the attendance photo.",
-
+            if not success:
+               raise HTTPException(
+                  500,
+                  "Could not encode attendance photo.",
                 )
 
+            object_key = f"attendance/{photo_name}"
 
-
-            if not cv2.imwrite(str(photo_path), color_frame):
-
-                raise HTTPException(
-
-                    500,
-
-                    "Could not save attendance photo.",
-
+            try:
+              upload_image(object_key, encoded.tobytes())
+            except Exception:
+               raise HTTPException(
+                 500,
+                 "Could not upload attendance photo to storage.",
                 )
 
 
@@ -1777,7 +1789,7 @@ async def scan_employee(
 
                     check_in=timestamp,
 
-                    check_in_photo=str(photo_path),
+                    check_in_photo=object_key,
 
                     check_in_liveness=False,
 
@@ -1807,104 +1819,70 @@ async def scan_employee(
 
 
 
+
         # ---------------- CHECK-OUT ----------------
 
-
-
         if not open_record:
-
             return {
-
                 "status": "not_checked_in",
-
                 "employee_name": employee.name,
-
                 "message": (
-
                     f"{employee.name}, you have not checked in."
-
                 ),
-
             }
-
-
 
         timestamp = datetime.now()
 
-
-
         photo_name = (
-
             f"{employee.id}_checkout_"
-
             f"{timestamp.strftime('%Y%m%d_%H%M%S_%f')}.jpg"
-
         )
-
-
-
-        photo_path = ATTENDANCE_PHOTOS / photo_name
-
-
 
         color_frame = cv2.imdecode(
-
             np.frombuffer(raw, dtype=np.uint8),
-
             cv2.IMREAD_COLOR,
-
         )
 
-
-
         if color_frame is None:
-
             raise HTTPException(
-
                 400,
-
-                "Could not decode the attendance photo.",
-
+                "Could not decode attendance photo.",
             )
 
+        success, encoded = cv2.imencode(".jpg", color_frame)
 
-
-        if not cv2.imwrite(str(photo_path), color_frame):
-
+        if not success:
             raise HTTPException(
-
                 500,
-
-                "Could not save attendance photo.",
-
+                "Could not encode attendance photo.",
             )
 
+        object_key = f"attendance/{photo_name}"
 
+        try:
+            upload_image(object_key, encoded.tobytes())
+        except Exception as exc:
+            print(
+                f"CHECK-OUT STORAGE ERROR | "
+                f"{type(exc).__name__}: {exc}"
+            )
+            raise HTTPException(
+                500,
+                "Could not upload check-out photo to storage.",
+            )
 
         open_record.check_out = timestamp
-
-        open_record.check_out_photo = str(photo_path)
-
+        open_record.check_out_photo = object_key
         open_record.check_out_liveness = False
-
-
 
         db.commit()
 
-
-
         return {
-
             "status": "checked_out",
-
             "employee_name": employee.name,
-
             "message": (
-
                 f"{employee.name}, your check-out is registered."
-
             ),
-
         }
 
 
@@ -2070,12 +2048,12 @@ def admin_attendance(user=Depends(require_admin)):
         }
 
 
+
 @app.get("/api/attendance-photo/{filename}")
 def get_attendance_photo(
     filename: str,
     user=Depends(current_user),
 ):
-    # Accept only a filename, not a directory path.
     if (
         not filename
         or Path(filename).name != filename
@@ -2083,19 +2061,14 @@ def get_attendance_photo(
     ):
         raise HTTPException(400, "Invalid photo filename.")
 
-    photo_path = (ATTENDANCE_PHOTOS / filename).resolve()
-
-    # Ensure the requested file stays inside attendance_photos.
-    if photo_path.parent != ATTENDANCE_PHOTOS.resolve():
-        raise HTTPException(400, "Invalid photo path.")
+    object_key = f"attendance/{filename}"
 
     with SessionLocal() as db:
         query = db.query(Attendance).filter(
-            (Attendance.check_in_photo == str(photo_path))
-            | (Attendance.check_out_photo == str(photo_path))
+            (Attendance.check_in_photo == object_key)
+            | (Attendance.check_out_photo == object_key)
         )
 
-        # Employees may access only their own attendance photos.
         if user["role"] != "admin":
             if (
                 user["role"] != "employee"
@@ -2120,13 +2093,18 @@ def get_attendance_photo(
                 "Photo is not linked to an accessible attendance record.",
             )
 
-        if not photo_path.is_file():
-            raise HTTPException(404, "Attendance photo file not found.")
+    try:
+        image_bytes = download_image(object_key)
+    except Exception:
+        raise HTTPException(
+            404,
+            "Attendance photo could not be retrieved from storage.",
+        )
 
-    return FileResponse(
-        str(photo_path),
+    return Response(
+        content=image_bytes,
         media_type="image/jpeg",
-        filename=filename,
+        headers={"Cache-Control": "private, no-store"},
     )
 
 
